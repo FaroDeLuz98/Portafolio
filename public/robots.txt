@@ -1,0 +1,5 @@
+# Permitimos que todos los buscadores indexen el portafolio.
+User-agent: *
+Allow: /
+
+# El sitio no tiene rutas privadas: todo es contenido público.
