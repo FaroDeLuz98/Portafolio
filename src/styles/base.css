@@ -1,0 +1,358 @@
+/* ==========================================================================
+   BASE · Variables, reset, tipografía y componentes globales
+   ==========================================================================
+   Este archivo define el "sistema de diseño": colores, fuentes, botones,
+   etiquetas y utilidades que se reutilizan en todo el sitio.
+   Los demás archivos (layout, sections, responsive) dependen de estas variables.
+   ========================================================================== */
+
+:root {
+  /* Paleta principal (tema oscuro) */
+  color-scheme: dark;
+  --bg: #080c10;
+  --bg-soft: #0b1118;
+  --surface: #111821;
+  --surface-2: #16202b;
+  --surface-3: #1b2632;
+
+  /* Bordes */
+  --line: #26313d;
+  --line-strong: #344252;
+
+  /* Texto */
+  --text: #e8eef3;
+  --muted: #8b98a5;
+  --soft: #a8b4bf;
+
+  /* Colores de acento */
+  --green: #3fb950;
+  --lime: #7ee787;
+  --blue: #79c0ff;
+  --sky: #38bdf8;
+
+  /* Medidas y radios */
+  --radius: 18px;
+  --radius-sm: 11px;
+  --header-h: 74px;
+  --max: 1160px;
+
+  /* Tipografías */
+  --font-sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Curva de animación reutilizada */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Reset básico ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 22px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 78% -10%, rgba(63, 185, 80, 0.09), transparent 38%),
+    radial-gradient(circle at 4% 28%, rgba(56, 189, 248, 0.055), transparent 32%);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip; /* evita scroll horizontal por elementos decorativos */
+}
+
+#root {
+  position: relative;
+  min-height: 100vh;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Selección de texto con el verde de la marca */
+::selection {
+  background: rgba(126, 231, 135, 0.28);
+  color: #ffffff;
+}
+
+/* Barra de scroll personalizada (Chrome / Edge / Safari) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #263440;
+  border: 2px solid var(--bg);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #35495a;
+}
+
+/* Accesibilidad: foco visible para navegación con teclado */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Layout helpers ---------- */
+.shell {
+  width: min(var(--max), calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.green {
+  color: var(--green);
+}
+
+/* Enlace para saltar la navegación (aparece al enfocarlo con Tab) */
+.skip-link {
+  position: absolute;
+  top: -70px;
+  left: 16px;
+  z-index: 200;
+  padding: 11px 16px;
+  border-radius: 9px;
+  background: var(--green);
+  color: #04130a;
+  font-weight: 700;
+  transition: top 0.2s var(--ease);
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 0.28s var(--ease),
+    border-color 0.25s,
+    background 0.25s,
+    box-shadow 0.25s,
+    color 0.25s;
+}
+
+.btn svg {
+  flex-shrink: 0;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn.primary {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--green), #2ea043);
+  color: #04130a;
+  box-shadow: 0 12px 32px -14px rgba(63, 185, 80, 0.85);
+}
+.btn.primary:hover {
+  background: linear-gradient(135deg, var(--lime), var(--green));
+  box-shadow: 0 18px 40px -14px rgba(126, 231, 135, 0.7);
+}
+
+.btn.ghost {
+  background: rgba(22, 32, 43, 0.72);
+  color: var(--text);
+}
+.btn.ghost:hover {
+  border-color: #536474;
+  background: var(--surface-3);
+}
+
+.btn.small {
+  padding: 9px 14px;
+  border-radius: 9px;
+  font-size: 12.5px;
+}
+
+/* Botón de copiar correo: cambia a verde cuando copia */
+.copy-btn.is-copied {
+  border-color: rgba(126, 231, 135, 0.55);
+  background: rgba(63, 185, 80, 0.12);
+  color: var(--lime);
+}
+
+/* ---------- Etiquetas / píldoras ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid #344151;
+  border-radius: 99px;
+  background: #26313d;
+  color: #a6b7c7;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pill.green-pill {
+  border-color: rgba(63, 185, 80, 0.35);
+  background: rgba(63, 185, 80, 0.12);
+  color: #9decad;
+}
+
+/* Punto verde "en línea" con animación de pulso */
+.online-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(63, 185, 80, 0.14);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.16);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(63, 185, 80, 0.04);
+    opacity: 0.78;
+  }
+}
+
+/* Cursor de terminal que titila */
+.cursor {
+  color: var(--green);
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Texto con degradado animado */
+.gradient {
+  color: var(--lime); /* fallback si el navegador no soporta background-clip */
+  background: linear-gradient(
+    100deg,
+    #7ee787 0%,
+    #3fb950 28%,
+    #79c0ff 62%,
+    #7ee787 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 9s linear infinite;
+}
+
+@keyframes gradient-shift {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Enlace de texto con flecha */
+.inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lime);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: color 0.2s, gap 0.25s var(--ease);
+}
+.inline-link:hover {
+  gap: 9px;
+  color: #b1fbbf;
+}
+
+/* ---------- Respeto por "reducir movimiento" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .tech-track {
+    animation: none !important;
+  }
+
+  .bg-orb,
+  .contact-glow {
+    animation: none !important;
+  }
+}

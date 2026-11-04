@@ -1,0 +1,432 @@
+/* ==========================================================================
+   RESPONSIVE · Adaptaciones para tablet y celular
+   ==========================================================================
+   Se usa "max-width" en orden descendente: los estilos de abajo pisan a los
+   de arriba cuando la pantalla es más chica.
+   ========================================================================== */
+
+/* ---------- Notebooks chicas ---------- */
+@media (max-width: 1200px) {
+  /* El tercer chip decorativo se oculta para no salirse del viewport */
+  .chip-three {
+    display: none;
+  }
+}
+
+@media (max-width: 1080px) {
+  .hero {
+    gap: 40px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.7rem, 5.4vw, 4.1rem);
+  }
+}
+
+/* ---------- Tablets horizontales ---------- */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 64px;
+    min-height: 0;
+    padding-top: 64px;
+    padding-bottom: 86px;
+  }
+
+  .hero-visual {
+    width: min(580px, 94%);
+    margin-inline: auto;
+  }
+
+  .scroll-cue {
+    display: none;
+  }
+
+  .section {
+    padding-block: 72px;
+  }
+
+  .section-heading {
+    margin-bottom: 34px;
+  }
+
+  /* Una sola columna para que las tarjetas no queden apretadas */
+  .about-grid,
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projects-grid {
+    gap: 26px;
+  }
+
+  .project-visual {
+    aspect-ratio: 16 / 8.8;
+  }
+
+  .github-body {
+    grid-template-columns: 1fr;
+  }
+
+  .github-preview img {
+    max-height: 430px;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .mini-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+/* ---------- Navegación móvil ---------- */
+@media (max-width: 820px) {
+  .top-inner {
+    gap: 12px;
+  }
+
+  .main-nav {
+    display: none;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  .menu-button {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .section-aside {
+    max-width: 300px;
+  }
+}
+
+/* En escritorio el menú móvil nunca debe verse */
+@media (min-width: 821px) {
+  .mobile-nav,
+  .mobile-backdrop {
+    display: none !important;
+  }
+}
+
+/* ---------- Celulares ---------- */
+@media (max-width: 640px) {
+  :root {
+    --header-h: 64px;
+  }
+
+  .shell {
+    width: min(100% - 32px, var(--max));
+  }
+
+  .mark {
+    gap: 9px;
+    font-size: 15px;
+  }
+
+  .mark-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  /* Hero */
+  .hero {
+    gap: 54px;
+    padding-top: 46px;
+    padding-bottom: 64px;
+  }
+
+  .hero h1 {
+    margin-bottom: 18px;
+    font-size: clamp(2.35rem, 11vw, 3.1rem);
+    letter-spacing: -0.045em;
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 26px;
+  }
+
+  .path {
+    margin-top: 22px;
+    font-size: 10.5px;
+  }
+
+  .eyebrow {
+    padding: 6px 12px;
+    font-size: 10.5px;
+  }
+
+  .hero-actions {
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .hero-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 28px;
+  }
+
+  .meta-divider {
+    display: none;
+  }
+
+  /* Editor */
+  .hero-visual {
+    width: 100%;
+  }
+
+  .editor,
+  .hero-visual:hover .editor {
+    transform: none;
+  }
+
+  .editor-content {
+    padding: 16px 12px;
+    font-size: 10px;
+    line-height: 2;
+  }
+
+  .line {
+    width: 24px;
+  }
+
+  .floating-chip {
+    padding: 6px 9px;
+    font-size: 9.5px;
+  }
+
+  .chip-one {
+    top: -18px;
+    right: -4px;
+  }
+
+  .chip-two {
+    bottom: -18px;
+    left: -4px;
+  }
+
+  .chip-three {
+    display: none;
+  }
+
+  /* Cinta de tecnologías */
+  .tech-item {
+    gap: 22px;
+    padding-left: 22px;
+    font-size: 9.5px;
+  }
+
+  /* Secciones */
+  .section {
+    padding-block: 56px;
+  }
+
+  .section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .section-aside {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  /* Sobre mí */
+  .about-card,
+  .skills-card {
+    padding: 22px;
+  }
+
+  .about-card p,
+  .skills-card > p {
+    font-size: 13.5px;
+  }
+
+  .mini-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Proyectos */
+  .projects-grid {
+    gap: 22px;
+  }
+
+  .project-visual {
+    aspect-ratio: 16 / 9.6;
+    margin: 10px 10px 0;
+  }
+
+  .project-info {
+    padding: 18px 18px 20px;
+  }
+
+  .project-info h3 {
+    font-size: 20px;
+  }
+
+  .project-info p {
+    font-size: 13px;
+  }
+
+  .projects-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 20px;
+  }
+
+  /* GitHub */
+  .github-panel {
+    padding: 20px;
+  }
+
+  .github-head {
+    align-items: flex-start;
+  }
+
+  .green-pill {
+    display: none;
+  }
+
+  .github-identity strong {
+    font-size: 14px;
+  }
+
+  .github-stats {
+    gap: 7px;
+  }
+
+  .stat-card {
+    min-height: 66px;
+    padding: 12px 9px;
+  }
+
+  .stat-card strong {
+    font-size: 18px;
+  }
+
+  .stat-card span {
+    font-size: 9px;
+  }
+
+  .github-preview span {
+    padding: 24px 12px 10px;
+    font-size: 11.5px;
+  }
+
+  .github-footer {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .github-footer span {
+    overflow-wrap: anywhere;
+  }
+
+  /* Experiencia */
+  .timeline {
+    padding-left: 28px;
+  }
+
+  .timeline-rail {
+    left: 2px;
+  }
+
+  .timeline-item {
+    padding: 18px;
+  }
+
+  .timeline-dot {
+    top: 22px;
+    left: -33px;
+  }
+
+  .timeline-item h3 span {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+  }
+
+  /* Contacto */
+  .contact-inner {
+    padding: 70px 0 66px;
+  }
+
+  .contact-lead {
+    font-size: 14px;
+  }
+
+  .contact-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contact-actions .btn {
+    width: 100%;
+  }
+
+  .contact-links {
+    flex-direction: column;
+    gap: 11px;
+    margin-top: 30px;
+  }
+
+  .contact-cta-link {
+    margin-left: 0;
+  }
+
+  /* Footer */
+  .footer-inner {
+    min-height: 0;
+    padding: 20px 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-built {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .back-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* ---------- Celulares muy chicos ---------- */
+@media (max-width: 400px) {
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .mini-stats {
+    gap: 10px;
+  }
+}
+
+/* ---------- Dispositivos sin hover ---------- */
+@media (hover: none) {
+  .project-spotlight {
+    display: none;
+  }
+}

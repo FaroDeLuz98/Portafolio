@@ -1,0 +1,21 @@
+{
+  "name": "fernando-sisnande-portfolio",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Portafolio personal de Fernando Sisnande · Desarrollador Web Junior (React + Vite + Framer Motion)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "framer-motion": "^14.9.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.2.1",
+    "vite": "^8.3.5"
+  }
+}
