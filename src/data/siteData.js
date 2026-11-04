@@ -42,8 +42,8 @@ export const projects = [
     imageAlt: 'Captura del sitio web Maktub con constelaciones asistidas con caballos',
     accent: '#34d399',
     accentRgb: '52, 211, 153',
-    url: 'https://www.instagram.com/maktubtuliberacion/',
-    linkLabel: 'Ver Maktub en Instagram',
+    url: 'https://heroic-faun-71d0f4.netlify.app/',
+    linkLabel: 'Visitar Maktub',
     external: true,
   },
   {
@@ -58,8 +58,8 @@ export const projects = [
     imageAlt: 'Captura del sitio web oficial de Juglares y Hugo Cabeza',
     accent: '#fbbf24',
     accentRgb: '251, 191, 36',
-    url: 'https://www.instagram.com/hugocabeza_juglares/',
-    linkLabel: 'Ver Juglares en Instagram',
+    url: 'https://incandescent-semolina-a7b3ff.netlify.app/',
+    linkLabel: 'Visitar Juglares',
     external: true,
   },
   {
@@ -74,9 +74,9 @@ export const projects = [
     imageAlt: 'Captura del sitio web de MR Coiffeur con servicios de peluquería',
     accent: '#f472b6',
     accentRgb: '244, 114, 182',
-    url: '#contacto',
-    linkLabel: 'Consultar por este proyecto',
-    external: false,
+    url: 'https://cute-empanada-4edf45.netlify.app/',
+    linkLabel: 'Visitar MR Coiffeur',
+    external: true,
   },
 ];
 
