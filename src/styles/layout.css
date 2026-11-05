@@ -424,23 +424,6 @@
   color: var(--lime);
 }
 
-.mouse {
-  display: flex;
-  justify-content: center;
-  width: 21px;
-  height: 33px;
-  padding-top: 6px;
-  border: 1.5px solid #3c4a57;
-  border-radius: 12px;
-}
-.mouse span {
-  width: 3px;
-  height: 7px;
-  border-radius: 99px;
-  background: var(--lime);
-  animation: scroll-wheel 1.8s ease-in-out infinite;
-}
-
 @keyframes scroll-wheel {
   0%,
   100% {

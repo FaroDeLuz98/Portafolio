@@ -133,17 +133,6 @@ export default function Hero() {
         <CodeWindow />
         <FloatingChips />
       </motion.div>
-
-      <a
-        className="scroll-cue"
-        href="#sobre-mi"
-        aria-label="Scroll · Bajar a la sección Sobre mí"
-      >
-        <span className="mouse" aria-hidden="true">
-          <span />
-        </span>
-        <span>scroll</span>
-      </a>
     </section>
   );
 }
