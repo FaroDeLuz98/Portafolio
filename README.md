@@ -1,38 +1,170 @@
-# Portafolio · Fernando Sisnande
 
-Portafolio personal de **Fernando Sisnande**, estudiante de Informática y desarrollador web junior en Uruguay.
+# Fernando Sisnande | Portfolio
 
-El sitio fue reconstruido con **React + Vite + Framer Motion** para tener animaciones fluidas, animaciones al hacer scroll, una grilla de proyectos bien separada y un código ordenado y comentado.
+### Desarrollador Web Junior · Estudiante de Informática
 
----
+Bienvenido a mi portafolio personal. Soy **Fernando Sisnande**, desarrollador web junior de Uruguay, interesado en el desarrollo de software, la programación y la creación de soluciones digitales.
 
-## Tecnologías
+Me apasiona transformar ideas en proyectos funcionales, combinando diseño, experiencia de usuario y tecnología.
 
-| Área | Herramientas |
-| --- | --- |
-| Frontend | React 19, JSX, CSS modular |
-| Build / dev | Vite 8 |
-| Animaciones | Framer Motion |
-| Datos en vivo | API pública de GitHub (sin backend) |
-| Deploy | Vercel |
+Este repositorio contiene el código fuente de mi portafolio, donde presento mis proyectos, conocimientos técnicos, formación y experiencia.
 
-> No se usa PHP, Java, C, C#, C++ ni ningún lenguaje que Vercel no soporte para este proyecto.
+### 🌐 Portafolio en línea
+
+**[Visitar mi portafolio](https://fernando-sisnande-portfolio.vercel.app)**
 
 ---
 
-## Cómo ejecutarlo
+## Sobre mí
+
+Soy estudiante de Informática con experiencia académica y práctica en desarrollo web, bases de datos y creación de aplicaciones.
+
+Durante mi formación he trabajado en proyectos individuales y colaborativos, desarrollando soluciones para necesidades reales.
+
+Mis principales intereses son:
+
+- Desarrollo frontend y backend.
+- Diseño de interfaces modernas y responsivas.
+- Desarrollo de aplicaciones web.
+- Bases de datos y gestión de información.
+- Automatización e integración de inteligencia artificial.
+- Aprendizaje continuo de nuevas tecnologías.
+
+Mi objetivo profesional es seguir desarrollando mis habilidades y comenzar mi trayectoria laboral en el sector tecnológico.
+
+---
+
+## Tecnologías y herramientas
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+- React
+- Bootstrap
+- Diseño responsive
+
+### Backend y bases de datos
+
+- PHP
+- MySQL / MariaDB
+- SQL
+- Integración de APIs
+
+### Herramientas de desarrollo
+
+- Git y GitHub
+- Visual Studio Code
+- Vite
+- XAMPP
+- Vercel
+- Linux
+
+### Tecnologías utilizadas en este portafolio
+
+| Tecnología | Función |
+|------------|---------|
+| React 19 | Construcción de interfaces |
+| JavaScript / JSX | Lógica e interactividad |
+| Vite 8 | Desarrollo y compilación |
+| CSS | Estilos y diseño responsive |
+| Framer Motion | Animaciones e interacciones |
+| GitHub API | Integración de información pública |
+| Vercel | Alojamiento y despliegue |
+
+---
+
+## Proyectos destacados
+
+### Byztoo PC — E-commerce tecnológico
+
+Plataforma de comercio electrónico enfocada en productos informáticos.
+
+**Características:**
+- Catálogo de productos.
+- Carrito de compras.
+- Registro e inicio de sesión.
+- Sistema de favoritos.
+- Buscador de productos.
+- Diseño adaptable a distintos dispositivos.
+- Integración con base de datos.
+
+**Tecnologías:** PHP, MySQL, HTML, CSS, JavaScript y Bootstrap.
+
+### MR Couiffer — Sitio web comercial
+
+Proyecto web orientado a la presentación digital de un emprendimiento, priorizando una experiencia visual moderna y una navegación intuitiva.
+
+**Características:**
+- Diseño moderno y responsive.
+- Presentación de servicios.
+- Animaciones e interacciones visuales.
+- Navegación optimizada para dispositivos móviles.
+- Enfoque en experiencia de usuario.
+
+Estos proyectos representan parte de mi aprendizaje y experiencia práctica en el desarrollo de soluciones web.
+
+---
+
+## Características del portafolio
+
+El sitio fue diseñado para ofrecer una experiencia moderna, dinámica y accesible.
+
+- Interfaz responsive para computadoras, tablets y celulares.
+- Animaciones suaves al desplazarse por la página.
+- Transiciones implementadas con Framer Motion.
+- Presentación interactiva de proyectos.
+- Sección de tecnologías y habilidades.
+- Integración con GitHub.
+- Línea de tiempo de formación y experiencia.
+- Sección de contacto.
+- Optimización de imágenes y recursos.
+- Compatibilidad con preferencias de movimiento reducido.
+
+---
+
+## Instalación y ejecución local
+
+Para ejecutar este proyecto necesitás tener instalado **Node.js** y npm.
+
+### 1. Clonar el repositorio
 
 ```bash
-# 1. Instalar dependencias
+git clone https://github.com/FaroDeLuz98/Portafolio.git
+```
+
+### 2. Entrar al proyecto
+
+```bash
+cd Portafolio
+```
+
+### 3. Instalar dependencias
+
+```bash
 npm install
+```
 
-# 2. Servidor de desarrollo (http://localhost:5173)
+### 4. Iniciar el servidor de desarrollo
+
+```bash
 npm run dev
+```
 
-# 3. Compilar para producción
+Abrí en el navegador la dirección local indicada por Vite, normalmente:
+
+`http://localhost:5173`
+
+### 5. Generar la versión de producción
+
+```bash
 npm run build
+```
 
-# 4. Previsualizar la compilación
+### 6. Previsualizar la compilación
+
+```bash
 npm run preview
 ```
 
@@ -42,84 +174,86 @@ npm run preview
 
 ```text
 Portafolio/
-├── index.html                  # HTML base: metadatos, fuentes, SEO y JSON-LD
-├── vite.config.js              # Configuración de Vite
-├── vercel.json                 # Configuración de deploy y caché de assets
+│
 ├── public/
-│   └── assets/                 # Imágenes optimizadas (WebP) y foto de perfil
+│   └── assets/           # Imágenes y recursos públicos
+│
 ├── src/
-│   ├── main.jsx                # Punto de entrada de React
-│   ├── App.jsx                 # Orden de las secciones de la página
-│   ├── data/
-│   │   └── siteData.js         # ⭐ Todo el contenido editable del sitio
-│   ├── components/
-│   │   ├── Navbar.jsx          # Menú fijo, sección activa y menú móvil
-│   │   ├── Hero.jsx            # Portada con parallax y entrada escalonada
-│   │   ├── CodeWindow.jsx      # Editor decorativo + chips flotantes
-│   │   ├── TechMarquee.jsx     # Cinta infinita de tecnologías
-│   │   ├── About.jsx           # Biografía, estadísticas y stack
-│   │   ├── Projects.jsx        # Grilla de proyectos
-│   │   ├── ProjectCard.jsx     # Tarjeta individual con spotlight
-│   │   ├── GitHubSection.jsx   # Estadísticas y repositorios reales
-│   │   ├── Experience.jsx      # Línea de tiempo animada
-│   │   ├── Contact.jsx         # Contacto y copiar correo
-│   │   ├── Footer.jsx          # Pie de página
-│   │   ├── Reveal.jsx          # Animación reutilizable al hacer scroll
-│   │   └── ...                 # Iconos, fondos y controles auxiliares
-│   └── styles/
-│       ├── base.css            # Variables, reset, botones y utilidades
-│       ├── layout.css          # Fondo, navbar, hero, footer
-│       ├── sections.css        # Tarjetas, GitHub, timeline y contacto
-│       └── responsive.css      # Adaptaciones para tablet y celular
-├── legacy/                     # Respaldo de la versión anterior (no se publica)
-└── dist/                       # Resultado del build (lo genera Vercel)
+│   ├── components/       # Componentes reutilizables
+│   ├── data/             # Información y contenido del sitio
+│   ├── styles/           # Estilos y diseño responsive
+│   ├── App.jsx           # Componente principal
+│   └── main.jsx          # Punto de entrada
+│
+├── legacy/               # Archivos de versiones anteriores
+├── index.html            # Documento HTML principal
+├── package.json          # Dependencias y scripts
+├── vite.config.js        # Configuración de Vite
+├── vercel.json           # Configuración de despliegue
+└── README.md             # Documentación
 ```
 
 ---
 
-## Dónde editar el contenido
+## Despliegue en Vercel
 
-Casi todo el contenido está centralizado en **`src/data/siteData.js`**:
+El portafolio está preparado para su publicación en Vercel.
 
-- `projects`: tarjetas de proyectos, enlaces, capturas y colores de acento.
-- `technologies`: nombres de la cinta animada.
-- `skillGroups`: tecnologías agrupadas por área.
-- `timeline`: experiencia y formación.
-- `contact`: correo, GitHub y LinkedIn.
+**Configuración:**
 
-Para agregar un proyecto, copiá un objeto de `projects` y modificá sus campos. La grilla se adapta automáticamente.
+| Opción | Valor |
+|--------|-------|
+| Framework | Vite |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Rama principal | `main` |
 
----
+Si el repositorio está correctamente conectado a Vercel, cada nuevo push a la rama de producción genera automáticamente un nuevo despliegue.
 
-## Animaciones incluidas
+### Actualización del sitio
 
-- **Scroll reveal**: cada bloque aparece con fade + desplazamiento (`Reveal.jsx`).
-- **Barra de progreso** de lectura en la parte superior.
-- **Parallax** del editor de código y del texto del hero.
-- **Entrada escalonada** del hero con Framer Motion.
-- **Menú activo animado** con `layoutId` (la píldora se mueve entre secciones).
-- **Cinta infinita** de tecnologías con pausa al pasar el mouse.
-- **Tarjetas de proyectos**: elevación al hover, zoom de la captura y spotlight que sigue al cursor.
-- **Línea de tiempo** que se dibuja a medida que se hace scroll.
-- **Botón "volver arriba"** animado.
-- **Respeto por `prefers-reduced-motion`**: si el usuario prefiere menos movimiento, las animaciones se reducen o se desactivan.
+Después de realizar cambios en Visual Studio Code:
 
----
+```bash
+git add .
+git commit -m "Actualizar portafolio"
+git push origin main
+```
 
-## Deploy en Vercel
-
-1. Subí el proyecto a GitHub.
-2. En [vercel.com](https://vercel.com), importá el repositorio.
-3. Vercel detecta **Vite** automáticamente (también está configurado en `vercel.json`).
-4. Build command: `npm run build` · Output directory: `dist`.
-5. Deploy.
-
-Cada push a la rama principal genera un deploy nuevo.
+Vercel detectará los cambios y ejecutará una nueva compilación.
 
 ---
 
-## Notas
+## Formación y objetivos
 
-- Las estadísticas de GitHub se obtienen de la API pública en el navegador. Si se supera el límite de pedidos, la sección sigue funcionando con la captura y el enlace al perfil.
-- Las capturas de proyectos se convirtieron a **WebP** para reducir el peso de ~7 MB a ~600 KB.
-- La carpeta `legacy/` guarda la versión anterior por si querés comparar o recuperar algo. No forma parte del build.
+Mi formación está orientada a la informática, la programación y el desarrollo de soluciones tecnológicas.
+
+Busco continuar mis estudios superiores en Tecnologías de la Información y adquirir experiencia profesional participando en proyectos de desarrollo de software.
+
+Me interesa trabajar en equipos donde pueda aportar mis conocimientos, resolver problemas y continuar aprendiendo.
+
+---
+
+## Contacto
+
+Estoy abierto a oportunidades de aprendizaje, colaboración y desarrollo profesional.
+
+- **Portafolio:** [fernando-sisnande-portfolio.vercel.app](https://fernando-sisnande-portfolio.vercel.app)
+- **GitHub:** [FaroDeLuz98](https://github.com/FaroDeLuz98)
+- **Ubicación:** Uruguay
+
+---
+
+## Estado del proyecto
+
+**Versión:** 2.0
+
+El portafolio se encuentra en desarrollo y mejora continua.
+
+Entre los objetivos del proyecto se encuentran la optimización del rendimiento, la accesibilidad, la experiencia móvil y la incorporación de nuevos trabajos.
+
+---
+
+**Desarrollado por Fernando Sisnande.**
+
+*Cada proyecto es una oportunidad para aprender, mejorar y transformar una idea en algo real.*
