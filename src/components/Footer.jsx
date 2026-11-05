@@ -12,10 +12,6 @@ export default function Footer() {
     <footer>
       <div className="shell footer-inner">
         <span>© {year} Fernando Sisnande</span>
-        <span className="footer-built">
-          Hecho con React, Vite y Framer Motion{' '}
-          <span className="green" aria-hidden="true">♥</span>
-        </span>
         <div className="footer-links">
           <a href={contact.github} target="_blank" rel="noopener noreferrer">
             GitHub
