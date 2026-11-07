@@ -136,3 +136,21 @@ export function EyeIcon({ size = 16 }) {
     </svg>
   );
 }
+
+export function InfoIcon({ size = 15 }) {
+  return (
+    <svg {...base} width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M12 16v-4.2M12 8.2h.01" />
+    </svg>
+  );
+}
+
+export function BriefcaseIcon({ size = 16 }) {
+  return (
+    <svg {...base} width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2.5" y="7" width="19" height="13" rx="2.4" />
+      <path d="M8.5 7V5.2A1.7 1.7 0 0 1 10.2 3.5h3.6a1.7 1.7 0 0 1 1.7 1.7V7M2.5 12.2h19" />
+    </svg>
+  );
+}

@@ -7,23 +7,23 @@ import Hero from './components/Hero.jsx';
 import TechMarquee from './components/TechMarquee.jsx';
 import About from './components/About.jsx';
 import Projects from './components/Projects.jsx';
-import GitHubSection from './components/GitHubSection.jsx';
 import Experience from './components/Experience.jsx';
+import GitHubSection from './components/GitHubSection.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
 import BackToTop from './components/BackToTop.jsx';
 import ExperienceCustomizer from './components/ExperienceCustomizer.jsx';
+import TechExplainerModal from './components/TechExplainerModal.jsx';
 
 /**
- * APP · Estructura general del portafolio interactivo 3D
- * ------------------------------------------------------
- * Envuelto en PreferencesProvider para permitir configurar en tiempo real
- * tipografías, escalas de letras, animaciones, geometrías 3D y colores.
+ * APP · Portafolio Profesional Verde Corporativo + Guía Interactiva IT
+ * --------------------------------------------------------------------
+ * Pensado para grandes empresas, equipos de selección (RRHH) y clientes
+ * que no pertenecen al sector tecnológico, conservando toda la experiencia 3D.
  */
 export default function App() {
   return (
     <PreferencesProvider>
-      {/* Accesibilidad: permite saltar la navegación con el teclado */}
       <a className="skip-link" href="#contenido">
         Saltar al contenido
       </a>
@@ -38,12 +38,13 @@ export default function App() {
         <TechMarquee />
         <About />
         <Projects />
-        <GitHubSection />
         <Experience />
+        <GitHubSection />
         <Contact />
       </main>
 
       <Footer />
+      <TechExplainerModal />
       <ExperienceCustomizer />
       <BackToTop />
     </PreferencesProvider>

@@ -1,14 +1,21 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Tilt3DCard from './Tilt3DCard.jsx';
-import { ArrowUpRightIcon, CheckIcon, CloseIcon } from './Icons.jsx';
+import {
+  ArrowUpRightIcon,
+  BriefcaseIcon,
+  CheckIcon,
+  CloseIcon,
+  InfoIcon,
+} from './Icons.jsx';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
 /**
- * PROJECT MODAL · Vista previa expandida con tarjeta 3D y puntos clave
- * --------------------------------------------------------------------
- * Se abre al pulsar "Vista previa" en cualquier tarjeta de proyecto.
+ * PROJECT MODAL · Ficha ejecutiva expandida con tecnologías clickeables
  */
 export default function ProjectModal({ project, onClose }) {
+  const { openTechExplainer } = usePreferences();
+
   useEffect(() => {
     if (!project) return undefined;
     const prevOverflow = document.body.style.overflow;
@@ -72,6 +79,16 @@ export default function ProjectModal({ project, onClose }) {
             <div className="project-modal-content">
               <span className="project-type">{project.category}</span>
               <h3>{project.title}</h3>
+
+              {project.businessImpact && (
+                <div className="showcase-impact-box">
+                  <span className="showcase-impact-label">
+                    <BriefcaseIcon size={13} /> Solución para el negocio:
+                  </span>
+                  <p>{project.businessImpact}</p>
+                </div>
+              )}
+
               <p className="project-modal-desc">{project.description}</p>
 
               {project.highlights && project.highlights.length > 0 && (
@@ -85,10 +102,26 @@ export default function ProjectModal({ project, onClose }) {
                 </ul>
               )}
 
-              <div className="tags">
-                {project.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
+              <div className="tags-interactive-group">
+                <span className="tags-helper-label">
+                  <InfoIcon size={12} /> Presioná una tecnología para ver qué hace:
+                </span>
+                <div className="tags">
+                  {project.tags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      className="tag-explain-btn"
+                      onClick={() => {
+                        onClose();
+                        openTechExplainer(tag);
+                      }}
+                    >
+                      <span>{tag}</span>
+                      <i aria-hidden="true">?</i>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="project-modal-actions">

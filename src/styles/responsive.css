@@ -1,80 +1,82 @@
 /* ==========================================================================
-   RESPONSIVE · Adaptaciones para notebooks, tablets y celulares
+   RESPONSIVE · Adaptaciones completas para notebooks, tablets y celulares
    ========================================================================== */
 
-@media (max-width: 1200px) {
-  .chip-three {
+@media (max-width: 1120px) {
+  .hero-stage-grid {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 38px;
+  }
+
+  .bento-bio-cell {
+    grid-column: span 12;
+  }
+
+  .bento-stack-cell {
+    grid-column: span 7;
+    grid-row: span 1;
+  }
+
+  .bento-metrics-cell,
+  .bento-radar-cell {
+    grid-column: span 5;
+  }
+
+  .uy-clock {
     display: none;
   }
 }
 
-@media (max-width: 1080px) {
-  .hero {
-    gap: 40px;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.65rem, 5.2vw, 4rem);
-  }
-
-  .header-studio-btn span {
-    display: none;
-  }
-}
-
-/* ---------- Tablets horizontales ---------- */
-@media (max-width: 960px) {
-  .hero {
+@media (max-width: 980px) {
+  .hero-stage-grid {
     grid-template-columns: 1fr;
-    gap: 56px;
-    min-height: 0;
-    padding-top: 56px;
-    padding-bottom: 84px;
+    gap: 48px;
   }
 
-  .hero-visual {
-    width: min(600px, 96%);
+  .dossier-card {
+    max-width: 440px;
     margin-inline: auto;
   }
 
-  .scroll-cue {
-    display: none;
+  .bento-stack-cell,
+  .bento-metrics-cell,
+  .bento-radar-cell {
+    grid-column: span 12;
   }
 
-  .section {
-    padding-block: 72px;
+  .showcase-card--editorial,
+  .showcase-card--editorial.is-reversed {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 20px;
   }
 
-  .section-heading {
-    margin-bottom: 34px;
+  .showcase-card--editorial.is-reversed .browser-mockup,
+  .showcase-card--editorial.is-reversed .showcase-content {
+    order: initial;
   }
 
-  .about-grid,
-  .projects-grid {
+  .projects-grid,
+  .chapters-grid,
+  .gh-command-grid {
     grid-template-columns: 1fr;
   }
 
-  .projects-grid {
-    gap: 26px;
-  }
-
-  .project-visual {
-    aspect-ratio: 16 / 8.8;
-  }
-
-  .github-body {
-    grid-template-columns: 1fr;
-  }
-
-  .github-preview img {
-    max-height: 430px;
-    object-fit: cover;
-    object-position: top center;
-  }
-
-  .mini-stats {
+  .enterprise-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+  }
+
+  .explainer-two-cols,
+  .explainer-meta-row {
+    grid-template-columns: 1fr;
+  }
+
+  .studio-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-brand-col {
+    grid-column: span 2;
   }
 
   .project-modal-shell {
@@ -83,160 +85,44 @@
   }
 }
 
-/* ---------- Navegación móvil ---------- */
-@media (max-width: 860px) {
-  .top-inner {
-    gap: 12px;
+/* ---------- Menú móvil ---------- */
+@media (max-width: 900px) {
+  .capsule-links,
+  .capsule-cta {
+    display: none;
   }
 
-  .main-nav,
-  .header-actions {
-    display: none;
+  .capsule-right {
+    margin-left: auto;
   }
 
   .menu-button {
     display: inline-flex;
-    margin-left: auto;
-  }
-
-  .section-aside {
-    max-width: 300px;
   }
 }
 
-@media (min-width: 861px) {
-  .mobile-nav,
+@media (min-width: 901px) {
+  .mobile-drawer,
   .mobile-backdrop {
     display: none !important;
   }
 }
 
 /* ---------- Celulares ---------- */
-@media (max-width: 640px) {
-  :root {
-    --header-h: 64px;
-  }
-
+@media (max-width: 680px) {
   .shell {
     width: min(100% - 32px, var(--max));
   }
 
-  .mark {
-    gap: 9px;
-    font-size: 15px;
-  }
-
-  .mark-icon {
-    width: 30px;
-    height: 30px;
-    font-size: 12px;
-  }
-
-  .hero {
-    gap: 48px;
-    padding-top: 42px;
-    padding-bottom: 62px;
-  }
-
-  .hero h1 {
-    margin-bottom: 16px;
-    font-size: clamp(2.3rem, 10.5vw, 3.05rem);
-  }
-
-  .hero-role-banner {
-    font-size: 11.5px;
-    padding: 5px 11px;
-  }
-
-  .hero-subtitle {
-    font-size: 15px;
-    line-height: 1.75;
-    margin-bottom: 24px;
-  }
-
-  .path {
-    margin-top: 20px;
-    font-size: 10.5px;
-  }
-
-  .eyebrow {
-    padding: 6px 12px;
-    font-size: 10.5px;
-  }
-
-  .hero-actions {
-    gap: 10px;
-  }
-
-  .hero-actions .magnetic-wrap,
-  .hero-actions .btn {
-    flex: 1 1 auto;
-  }
-
-  .hero-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 7px;
-    margin-top: 26px;
-  }
-
-  .meta-divider {
-    display: none;
-  }
-
-  .hero-visual {
-    width: 100%;
-  }
-
-  .editor-depth-plate {
-    display: none;
-  }
-
-  .editor-content {
-    min-height: 240px;
-    padding: 16px 12px;
-    font-size: 10.5px;
-    line-height: 2;
-  }
-
-  .line {
-    width: 24px;
-  }
-
-  .floating-chip {
-    padding: 6px 9px;
-    font-size: 9.5px;
-  }
-
-  .chip-one {
-    top: -16px;
-    right: -4px;
-  }
-
-  .chip-two {
-    bottom: -16px;
-    left: -4px;
-  }
-
-  .chip-three {
-    display: none;
-  }
-
-  .tech-item {
-    gap: 18px;
-    padding-left: 18px;
-    font-size: 9.5px;
-  }
-
   .section {
-    padding-block: 56px;
+    padding-block: 68px;
   }
 
   .section-heading {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
 
   .section-aside {
@@ -244,144 +130,129 @@
     text-align: left;
   }
 
-  .about-card,
-  .skills-card {
-    padding: 22px;
+  .hero-editorial {
+    padding-top: 26px;
+    padding-bottom: 64px;
   }
 
-  .tech-sphere-3d {
-    height: 215px;
-  }
-
-  .mini-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .projects-grid {
-    gap: 22px;
-  }
-
-  .project-visual {
-    aspect-ratio: 16 / 9.6;
-    margin: 10px 10px 0;
-  }
-
-  .project-info {
-    padding: 18px 18px 20px;
-  }
-
-  .project-info h3 {
-    font-size: 20px;
-  }
-
-  .projects-footer {
+  .hero-telemetry {
     flex-direction: column;
     align-items: flex-start;
-    padding: 18px 20px;
+    padding-bottom: 20px;
+    margin-bottom: 26px;
   }
 
-  .github-panel {
-    padding: 20px;
+  .hero-monumental-title {
+    font-size: clamp(2.65rem, 12.5vw, 3.8rem);
   }
 
-  .github-head {
-    align-items: flex-start;
+  .hero-cta-bar .magnetic-wrap,
+  .hero-cta-bar .btn {
+    width: 100%;
   }
 
-  .green-pill {
+  .hero-quick-socials {
+    margin-left: 0;
+    margin-top: 4px;
+  }
+
+  .dossier-backplate,
+  .dossier-floating-tag {
     display: none;
   }
 
-  .github-stats {
-    gap: 7px;
+  .bento-card {
+    padding: 22px;
   }
 
-  .stat-card {
-    min-height: 66px;
-    padding: 12px 9px;
+  .bento-pillars,
+  .enterprise-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .enterprise-readiness-panel {
+    padding: 22px;
+  }
+
+  .capsule-guide-btn span {
+    display: none;
+  }
+  .capsule-guide-btn {
+    padding: 0 10px;
+  }
+
+  .tech-explainer-head,
+  .tech-explainer-switcher,
+  .tech-explainer-body,
+  .tech-explainer-foot {
+    padding-inline: 18px;
+  }
+
+  .bento-metrics {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .tech-sphere-3d {
+    height: 230px;
+  }
+
+  .projects-cta-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+  }
+
+  .showcase-actions .magnetic-wrap,
+  .showcase-actions .btn,
+  .project-preview-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .github-stats {
+    gap: 8px;
   }
 
   .stat-card strong {
-    font-size: 18px;
+    font-size: 19px;
   }
 
-  .stat-card span {
-    font-size: 9px;
+  .contact-monolith {
+    padding: 56px 20px;
+    border-radius: 24px;
   }
 
-  .github-preview span {
-    padding: 24px 12px 10px;
-    font-size: 11.5px;
-  }
-
-  .github-footer {
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .timeline {
-    padding-left: 28px;
-  }
-
-  .timeline-rail {
-    left: 2px;
-  }
-
-  .timeline-item {
-    padding: 18px;
-  }
-
-  .timeline-dot {
-    top: 22px;
-    left: -32px;
-  }
-
-  .timeline-item h3 span {
-    display: block;
-    margin-top: 2px;
-    font-size: 13px;
-  }
-
-  .contact-inner {
-    padding: 70px 0 66px;
-  }
-
-  .contact-actions {
+  .email-command-bar {
     flex-direction: column;
-    align-items: stretch;
+    border-radius: 20px;
+    padding: 14px;
+    width: 100%;
+  }
+
+  .email-copy-pill {
+    width: 100%;
+    justify-content: center;
   }
 
   .contact-actions .magnetic-wrap,
-  .contact-actions .copy-burst-wrap,
   .contact-actions .btn {
     width: 100%;
   }
 
-  .contact-links {
-    flex-direction: column;
-    gap: 11px;
-    margin-top: 30px;
+  .studio-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 40px 0 30px;
   }
 
-  .contact-cta-link {
-    margin-left: 0;
+  .footer-brand-col {
+    grid-column: span 1;
   }
 
-  .footer-inner {
-    min-height: 0;
-    padding: 22px 0;
+  .studio-footer-bottom {
     justify-content: center;
     text-align: center;
-  }
-
-  .footer-links {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .footer-built {
-    order: 3;
-    flex-basis: 100%;
   }
 
   .studio-dock-btn {
@@ -409,23 +280,8 @@
     width: 42px;
     height: 42px;
   }
-
-  .project-modal-shell {
-    padding: 18px;
-  }
 }
 
-@media (max-width: 400px) {
-  .hero-actions .btn {
-    width: 100%;
-  }
-
-  .mini-stats {
-    gap: 10px;
-  }
-}
-
-/* ---------- Dispositivos táctiles sin hover ---------- */
 @media (hover: none) {
   .project-spotlight,
   .tilt-3d-glare,

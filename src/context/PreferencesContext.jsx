@@ -1,47 +1,52 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { useReducedMotion } from 'framer-motion';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 
 /**
- * OPCIONES DEL CONFIGURADOR VISUAL (Letras · Animaciones · 3D · Color)
- * -------------------------------------------------------------------
- * Permite personalizar en tiempo real la tipografía, la escala de lectura,
- * el espaciado de titulares, la intensidad de animaciones y la escena 3D.
+ * SISTEMA DE PERSONALIZACIÓN Y EXPLICADOR INTERACTIVO · Edición Verde Corporativa (v5)
+ * ------------------------------------------------------------------------------------
+ * - Tema por defecto: Esmeralda Ejecutiva (verde corporativo de alto contraste).
+ * - Incluye estado global `explainedTech` para que presionar cualquier lenguaje
+ *   o herramienta en cualquier parte del sitio abra su explicación en palabras simples.
  */
 export const FONT_PRESETS = {
   geometric: {
     id: 'geometric',
-    name: 'Geométrica Tech',
+    name: 'Ejecutiva Moderna',
     sample: 'Aa',
-    badge: 'Space Grotesk',
+    badge: 'Space Grotesk + Jakarta',
     display: "'Space Grotesk', system-ui, sans-serif",
     sans: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+    serif: "'Fraunces', Georgia, serif",
     headingWeight: '700',
   },
   avant: {
     id: 'avant',
-    name: 'Vanguardia 3D',
+    name: 'Studio Syne',
     sample: 'Aa',
-    badge: 'Syne Display',
+    badge: 'Syne + Jakarta',
     display: "'Syne', 'Space Grotesk', system-ui, sans-serif",
     sans: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+    serif: "'Fraunces', Georgia, serif",
     headingWeight: '800',
   },
   editorial: {
     id: 'editorial',
-    name: 'Editorial Moderna',
+    name: 'Editorial Serif',
     sample: 'Aa',
-    badge: 'Fraunces Serif',
+    badge: 'Fraunces Italic',
     display: "'Fraunces', Georgia, serif",
     sans: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+    serif: "'Fraunces', Georgia, serif",
     headingWeight: '700',
   },
   mono: {
     id: 'mono',
-    name: 'Terminal Dev',
+    name: 'Ingeniería Mono',
     sample: '</>',
     badge: 'JetBrains Mono',
     display: "'JetBrains Mono', ui-monospace, monospace",
     sans: "'Space Grotesk', system-ui, sans-serif",
+    serif: "'Space Grotesk', system-ui, sans-serif",
     headingWeight: '700',
   },
 };
@@ -49,42 +54,42 @@ export const FONT_PRESETS = {
 export const ACCENT_THEMES = {
   emerald: {
     id: 'emerald',
-    name: 'Esmeralda',
-    green: '#3fb950',
-    greenDark: '#2ea043',
-    lime: '#7ee787',
-    secondary: '#38bdf8',
-    rgb: '63, 185, 80',
-    limeRgb: '126, 231, 135',
-    secondaryRgb: '56, 189, 248',
-    hexInt: 0x3fb950,
-    secondaryHexInt: 0x38bdf8,
+    name: 'Verde Ejecutivo',
+    green: '#22c55e',
+    greenDark: '#16a34a',
+    lime: '#86efac',
+    secondary: '#10b981',
+    rgb: '34, 197, 94',
+    limeRgb: '134, 239, 172',
+    secondaryRgb: '16, 185, 129',
+    hexInt: 0x22c55e,
+    secondaryHexInt: 0x10b981,
   },
-  cyan: {
-    id: 'cyan',
-    name: 'Cian Ártico',
-    green: '#0ea5e9',
-    greenDark: '#0284c7',
-    lime: '#7dd3fc',
-    secondary: '#a855f7',
-    rgb: '14, 165, 233',
-    limeRgb: '125, 211, 252',
-    secondaryRgb: '168, 85, 247',
-    hexInt: 0x0ea5e9,
-    secondaryHexInt: 0xa855f7,
+  jade: {
+    id: 'jade',
+    name: 'Jade Corporativo',
+    green: '#10b981',
+    greenDark: '#059669',
+    lime: '#6ee7b7',
+    secondary: '#34d399',
+    rgb: '16, 185, 129',
+    limeRgb: '110, 231, 183',
+    secondaryRgb: '52, 211, 153',
+    hexInt: 0x10b981,
+    secondaryHexInt: 0x34d399,
   },
-  violet: {
-    id: 'violet',
-    name: 'Pulso Violeta',
-    green: '#8b5cf6',
-    greenDark: '#7c3aed',
-    lime: '#c4b5fd',
-    secondary: '#38bdf8',
-    rgb: '139, 92, 246',
-    limeRgb: '196, 181, 253',
-    secondaryRgb: '56, 189, 248',
-    hexInt: 0x8b5cf6,
-    secondaryHexInt: 0x38bdf8,
+  aurora: {
+    id: 'aurora',
+    name: 'Menta & Turquesa',
+    green: '#2dd4bf',
+    greenDark: '#0d9488',
+    lime: '#5eead4',
+    secondary: '#22c55e',
+    rgb: '45, 212, 191',
+    limeRgb: '94, 234, 212',
+    secondaryRgb: '34, 197, 94',
+    hexInt: 0x2dd4bf,
+    secondaryHexInt: 0x22c55e,
   },
   amber: {
     id: 'amber',
@@ -108,9 +113,9 @@ export const FONT_SCALES = {
 };
 
 export const LETTER_TRACKINGS = {
-  tight: { id: 'tight', label: 'Ajustado', value: '-0.05em', body: '-0.01em' },
-  normal: { id: 'normal', label: 'Equilibrado', value: '-0.032em', body: '0em' },
-  wide: { id: 'wide', label: 'Aireado', value: '-0.01em', body: '0.012em' },
+  tight: { id: 'tight', label: 'Ajustado', value: '-0.036em', body: '-0.006em' },
+  normal: { id: 'normal', label: 'Equilibrado', value: '-0.022em', body: '0em' },
+  wide: { id: 'wide', label: 'Aireado', value: '-0.005em', body: '0.012em' },
 };
 
 export const SCENE_SHAPES = [
@@ -126,8 +131,7 @@ export const MOTION_LEVELS = [
   { id: 'minimal', label: 'Mínima' },
 ];
 
-const STORAGE_KEY = 'fernando-portfolio-prefs-v3';
-
+const STORAGE_KEY = 'fernando-portfolio-enterprise-green-v5';
 const VALID_SCENES = new Set(['constellation', 'waves', 'rings', 'off']);
 
 const DEFAULT_PREFS = {
@@ -143,8 +147,8 @@ const DEFAULT_PREFS = {
 const PreferencesContext = createContext(null);
 
 export function PreferencesProvider({ children }) {
-  const osReducedMotion = useReducedMotion();
   const [customizerOpen, setCustomizerOpen] = useState(false);
+  const [explainedTech, setExplainedTech] = useState(null);
 
   const [prefs, setPrefs] = useState(() => {
     try {
@@ -154,23 +158,19 @@ export function PreferencesProvider({ children }) {
         if (!VALID_SCENES.has(parsed.scene3DShape)) {
           parsed.scene3DShape = 'constellation';
         }
+        if (!ACCENT_THEMES[parsed.accentTheme]) {
+          parsed.accentTheme = 'emerald';
+        }
         return { ...DEFAULT_PREFS, ...parsed };
       }
     } catch {
-      // Ignora bloqueos de almacenamiento privado
+      // Sin almacenamiento local disponible
     }
     return DEFAULT_PREFS;
   });
 
-  // Si el sistema operativo pide menos movimiento y el usuario no forzó otro valor
-  const effectiveMotion = useMemo(() => {
-    if (osReducedMotion && prefs.motionLevel === 'full') {
-      return 'minimal';
-    }
-    return prefs.motionLevel;
-  }, [osReducedMotion, prefs.motionLevel]);
+  const effectiveMotion = prefs.motionLevel || 'full';
 
-  // Aplica variables CSS reactivas en <html> para actualizar letras, escalas y colores al instante
   useEffect(() => {
     const root = document.documentElement;
     const font = FONT_PRESETS[prefs.fontPreset] || FONT_PRESETS.geometric;
@@ -181,6 +181,7 @@ export function PreferencesProvider({ children }) {
 
     root.style.setProperty('--font-display', font.display);
     root.style.setProperty('--font-sans', font.sans);
+    root.style.setProperty('--font-serif', font.serif);
     root.style.setProperty('--heading-weight', font.headingWeight);
     root.style.setProperty('--font-scale', String(scaleObj.scale));
     root.style.setProperty('--heading-tracking', trackingObj.value);
@@ -201,17 +202,25 @@ export function PreferencesProvider({ children }) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
     } catch {
-      // Sin almacenamiento disponible
+      // Ignora bloqueos de almacenamiento
     }
   }, [prefs, effectiveMotion]);
 
-  const updatePref = (key, value) => {
+  const updatePref = useCallback((key, value) => {
     setPrefs((prev) => ({ ...prev, [key]: value }));
-  };
+  }, []);
 
-  const resetPrefs = () => {
+  const resetPrefs = useCallback(() => {
     setPrefs(DEFAULT_PREFS);
-  };
+  }, []);
+
+  const openTechExplainer = useCallback((techName = 'React') => {
+    setExplainedTech(techName);
+  }, []);
+
+  const closeTechExplainer = useCallback(() => {
+    setExplainedTech(null);
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -225,13 +234,27 @@ export function PreferencesProvider({ children }) {
       resetPrefs,
       customizerOpen,
       setCustomizerOpen,
+      explainedTech,
+      openTechExplainer,
+      closeTechExplainer,
     }),
-    [prefs, effectiveMotion, customizerOpen]
+    [
+      prefs,
+      effectiveMotion,
+      customizerOpen,
+      explainedTech,
+      updatePref,
+      resetPrefs,
+      openTechExplainer,
+      closeTechExplainer,
+    ]
   );
 
   return (
     <PreferencesContext.Provider value={value}>
-      {children}
+      <MotionConfig reducedMotion={effectiveMotion === 'minimal' ? 'always' : 'never'}>
+        {children}
+      </MotionConfig>
     </PreferencesContext.Provider>
   );
 }

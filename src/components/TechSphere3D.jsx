@@ -18,23 +18,22 @@ const SPHERE_TAGS = [
   'VS Code',
   'XAMPP',
   'UI / UX',
-  'Responsive',
+  'Diseño responsive',
 ];
 
 /**
- * TECH SPHERE 3D · Esfera 3D interactiva libremente móvil en 360°
+ * TECH SPHERE 3D · Esfera 3D libre en 360° + Explicación al tocar
  * ---------------------------------------------------------------
- * - Arrastrá con clic sostenido (o dedo) para moverte libremente en 360°.
- * - Al mover el puntero acompaña suavemente la dirección y conserva inercia.
- * - Soporta flechas del teclado cuando tiene foco para accesibilidad total.
+ * - Arrastrá con clic sostenido o dedo para moverte libremente en 360°.
+ * - Hacé clic (sin arrastrar) sobre cualquier lenguaje para ver al instante
+ *   en lenguaje claro para qué sirve.
  */
-export default function TechSphere3D() {
+export default function TechSphere3D({ selectedTech, onSelectTech }) {
   const containerRef = useRef(null);
   const itemRefs = useRef([]);
   const { isMinimalMotion } = usePreferences();
   const [isDragging, setIsDragging] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [activeTag, setActiveTag] = useState(null);
 
   const rotateFnRef = useRef(null);
   const dragDistanceRef = useRef(0);
@@ -60,8 +59,8 @@ export default function TechSphere3D() {
     let dragging = false;
     let lastX = 0;
     let lastY = 0;
-    let velX = 0.0022;
-    let velY = 0.004;
+    let velX = 0.002;
+    let velY = 0.0038;
     let hoverBiasX = 0;
     let hoverBiasY = 0;
 
@@ -93,7 +92,7 @@ export default function TechSphere3D() {
     const renderPositions = () => {
       const rect = container.getBoundingClientRect();
       const rx = Math.max(88, rect.width * 0.36);
-      const ry = Math.max(76, rect.height * 0.36);
+      const ry = Math.max(72, rect.height * 0.36);
 
       for (let i = 0; i < points.length; i += 1) {
         const p = points[i];
@@ -102,7 +101,7 @@ export default function TechSphere3D() {
 
         const depth = (p.z + 1.35) / 2.35;
         const scale = 0.7 + depth * 0.42;
-        const opacity = 0.26 + depth * 0.74;
+        const opacity = 0.28 + depth * 0.72;
         const tx = p.x * rx;
         const ty = p.y * ry;
 
@@ -118,8 +117,8 @@ export default function TechSphere3D() {
     let rafId = 0;
     const loop = () => {
       if (!dragging) {
-        const baseX = (isMinimalMotion ? 0 : 0.0016) + hoverBiasX;
-        const baseY = (isMinimalMotion ? 0 : 0.003) + hoverBiasY;
+        const baseX = (isMinimalMotion ? 0 : 0.0015) + hoverBiasX;
+        const baseY = (isMinimalMotion ? 0 : 0.0028) + hoverBiasY;
         velX = velX * 0.94 + baseX * 0.06;
         velY = velY * 0.94 + baseY * 0.06;
         if (Math.abs(velX) > 0.00005 || Math.abs(velY) > 0.00005) {
@@ -138,7 +137,10 @@ export default function TechSphere3D() {
       setHasInteracted(true);
       lastX = e.clientX;
       lastY = e.clientY;
-      container.setPointerCapture?.(e.pointerId);
+      // No capturamos el puntero si se presionó un botón para permitir onClick limpio
+      if (!(e.target instanceof Element && e.target.closest('button'))) {
+        container.setPointerCapture?.(e.pointerId);
+      }
     };
 
     const onPointerMove = (e) => {
@@ -163,15 +165,15 @@ export default function TechSphere3D() {
 
       const nx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
       const ny = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-      hoverBiasY = nx * 0.011;
-      hoverBiasX = -ny * 0.009;
+      hoverBiasY = nx * 0.01;
+      hoverBiasX = -ny * 0.008;
     };
 
     const endDrag = (e) => {
       if (!dragging) return;
       dragging = false;
       setIsDragging(false);
-      if (e?.pointerId != null) {
+      if (e?.pointerId != null && container.hasPointerCapture?.(e.pointerId)) {
         container.releasePointerCapture?.(e.pointerId);
       }
     };
@@ -179,6 +181,10 @@ export default function TechSphere3D() {
     const onPointerLeave = () => {
       hoverBiasX = 0;
       hoverBiasY = 0;
+      if (dragging) {
+        dragging = false;
+        setIsDragging(false);
+      }
     };
 
     container.addEventListener('pointerdown', onPointerDown);
@@ -222,7 +228,7 @@ export default function TechSphere3D() {
       tabIndex={0}
       onKeyDown={handleKeyDown}
       className={`tech-sphere-3d${isDragging ? ' is-dragging' : ''}`}
-      aria-label="Esfera interactiva 3D de tecnologías. Arrastrá con el mouse o usá las flechas para rotar."
+      aria-label="Esfera interactiva 3D de tecnologías. Arrastrá para girar o presioná un lenguaje para ver su explicación."
     >
       <div className="tech-sphere-core" aria-hidden="true" />
       <div className="tech-sphere-orbit-ring" aria-hidden="true" />
@@ -231,15 +237,17 @@ export default function TechSphere3D() {
         <button
           key={tag}
           type="button"
-          tabIndex={-1}
           ref={(el) => {
             itemRefs.current[idx] = el;
           }}
-          className={`tech-sphere-tag${activeTag === tag ? ' is-selected' : ''}`}
+          className={`tech-sphere-tag${
+            selectedTech === tag ? ' is-selected' : ''
+          }`}
+          title={`Clic para saber para qué sirve ${tag}`}
           onClick={(e) => {
             e.stopPropagation();
-            if (dragDistanceRef.current > 5) return;
-            setActiveTag((prev) => (prev === tag ? null : tag));
+            if (dragDistanceRef.current > 6) return;
+            onSelectTech?.(tag);
           }}
         >
           {tag}
@@ -250,9 +258,7 @@ export default function TechSphere3D() {
         className={`tech-sphere-hint${hasInteracted ? ' is-faded' : ''}`}
         aria-hidden="true"
       >
-        {activeTag
-          ? `✦ ${activeTag}`
-          : '⟲ Arrastrá o mové el cursor para girar en 360°'}
+        ⟲ Arrastrá en 360° · Clic en un lenguaje para ver qué hace
       </span>
     </div>
   );

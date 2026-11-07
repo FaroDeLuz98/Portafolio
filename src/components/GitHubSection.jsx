@@ -3,12 +3,11 @@ import Reveal from './Reveal.jsx';
 import SectionHeading from './SectionHeading.jsx';
 import Tilt3DCard from './Tilt3DCard.jsx';
 import AnimatedCounter from './AnimatedCounter.jsx';
-import { ArrowUpRightIcon, StarIcon } from './Icons.jsx';
+import GitHubAvatar from './GitHubAvatar.jsx';
+import { ArrowUpRightIcon, GitHubIcon, InfoIcon, StarIcon } from './Icons.jsx';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 import { contact } from '../data/siteData.js';
 
-/**
- * Colores aproximados de GitHub para el puntito del lenguaje.
- */
 const LANGUAGE_COLORS = {
   JavaScript: '#f1e05a',
   TypeScript: '#3178c6',
@@ -22,15 +21,21 @@ const LANGUAGE_COLORS = {
   Vue: '#41b883',
 };
 
+const LANG_TO_EXPLAINER = {
+  HTML: 'HTML5',
+  CSS: 'CSS3',
+  JavaScript: 'JavaScript',
+  PHP: 'PHP',
+};
+
 /**
- * GITHUB SECTION · Actividad real del perfil con vista 3D y contadores
- * --------------------------------------------------------------------
- * Trae datos públicos desde la API de GitHub (sin token, sin backend).
+ * GITHUB SECTION · Trazabilidad de Código explicada también para RRHH
  */
 export default function GitHubSection() {
   const [profile, setProfile] = useState(null);
   const [repos, setRepos] = useState([]);
-  const [status, setStatus] = useState('loading'); // loading | ready | error
+  const [status, setStatus] = useState('loading');
+  const { openTechExplainer } = usePreferences();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -77,8 +82,8 @@ export default function GitHubSection() {
   return (
     <section className="section shell" id="actividad">
       <SectionHeading
-        kicker="03 / OPEN SOURCE"
-        title="Mi actividad en"
+        kicker="04 / TRAZABILIDAD & TRABAJO EN EQUIPO"
+        title="Actividad verificable en"
         highlight="GitHub."
         aside={
           <a
@@ -87,31 +92,162 @@ export default function GitHubSection() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            @{contact.githubUser} ↗
+            <GitHubIcon size={15} /> @{contact.githubUser} ↗
           </a>
         }
       />
 
-      <Reveal className="panel github-panel">
-        <div className="github-head">
-          <div className="github-identity">
-            <div className="avatar">
-              <img src="/assets/ftperfil.jpeg" alt="Foto de perfil de Fernando" />
-            </div>
-            <div>
-              <strong>{profile?.name || contact.githubUser}</strong>
-              <span>Mi recorrido, commit a commit.</span>
-            </div>
-          </div>
-          <span className="pill green-pill">
-            <span className="online-dot" aria-hidden="true" />
-            Perfil de GitHub
+      {/* Nota amigable para reclutadores o personas no técnicas */}
+      <Reveal className="gh-non-tech-banner" delay={0.03}>
+        <div>
+          <span className="bento-chip">
+            <InfoIcon size={12} /> PARA PERSONAS FUERA DEL RUBRO IT
           </span>
+          <p>
+            <strong>¿Qué es GitHub?</strong> Es la plataforma estándar que usan
+            las grandes empresas para guardar el historial del software, revisar
+            calidad en equipo y verificar el trabajo real de un desarrollador.
+          </p>
         </div>
+        <button
+          type="button"
+          className="btn ghost small"
+          onClick={() => openTechExplainer('GitHub')}
+        >
+          Cómo funciona GitHub
+        </button>
+      </Reveal>
 
-        <div className="github-body">
-          {/* Captura del perfil con inclinación 3D */}
-          <Tilt3DCard maxTilt={4.5} className="github-preview-tilt">
+      <div className="gh-command-grid">
+        <Reveal className="bento-card gh-telemetry-card" delay={0.06}>
+          <div className="gh-profile-bar">
+            <div className="github-identity">
+              <div className="avatar">
+                <GitHubAvatar
+                  size={120}
+                  srcOverride={profile?.avatar_url}
+                  alt="Foto de perfil de Fernando Sisnande en GitHub"
+                />
+              </div>
+              <div>
+                <strong>{profile?.name || 'Fernando Sisnande'}</strong>
+                <span>@{contact.githubUser} · Historial público</span>
+              </div>
+            </div>
+            <span className="pill green-pill">
+              <span className="online-dot" aria-hidden="true" />
+              Datos en vivo
+            </span>
+          </div>
+
+          {status === 'loading' && (
+            <div className="github-stats" aria-hidden="true">
+              <div className="stat-card skeleton" />
+              <div className="stat-card skeleton" />
+              <div className="stat-card skeleton" />
+            </div>
+          )}
+
+          {status === 'ready' && profile && (
+            <div className="github-stats">
+              <div className="stat-card">
+                <strong>
+                  <AnimatedCounter value={profile.public_repos} />
+                </strong>
+                <span>Proyectos públicos</span>
+              </div>
+              <div className="stat-card">
+                <strong>
+                  <AnimatedCounter value={profile.followers} />
+                </strong>
+                <span>Red en GitHub</span>
+              </div>
+              <div className="stat-card">
+                <strong>
+                  {memberSince ? <AnimatedCounter value={memberSince} /> : '—'}
+                </strong>
+                <span>Activo desde</span>
+              </div>
+            </div>
+          )}
+
+          {status === 'error' && (
+            <p className="github-error">
+              Las estadísticas en vivo están temporalmente ocupadas. Podés
+              explorar todos mis repositorios directamente en GitHub.
+            </p>
+          )}
+
+          {status === 'ready' && repos.length > 0 && (
+            <div className="github-repos">
+              <h3>Últimas entregas y repositorios</h3>
+              {repos.map((repo) => {
+                const mappedLang = LANG_TO_EXPLAINER[repo.language] || repo.language;
+                return (
+                  <div className="repo-item" key={repo.id}>
+                    <a
+                      className="repo-main repo-main-link"
+                      href={repo.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <strong>
+                        {repo.name} <ArrowUpRightIcon size={13} />
+                      </strong>
+                      <p>{repo.description || 'Repositorio público en GitHub'}</p>
+                    </a>
+                    <div className="repo-meta">
+                      {repo.language ? (
+                        <button
+                          type="button"
+                          className="repo-language repo-lang-btn"
+                          onClick={() => openTechExplainer(mappedLang)}
+                          title={`Clic para saber para qué sirve ${repo.language}`}
+                        >
+                          <i
+                            aria-hidden="true"
+                            style={{
+                              background:
+                                LANGUAGE_COLORS[repo.language] || '#22c55e',
+                            }}
+                          />
+                          <span>{repo.language}</span>
+                          <small aria-hidden="true">?</small>
+                        </button>
+                      ) : (
+                        <span className="repo-language">Código</span>
+                      )}
+                      {repo.stargazers_count > 0 && (
+                        <span className="repo-stars">
+                          <StarIcon size={12} />
+                          {repo.stargazers_count}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="github-footer">
+            <span>
+              perfil oficial: <strong>github.com/{contact.githubUser}</strong>
+            </span>
+            <a
+              className="btn small"
+              href={contact.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Abrir GitHub
+              <ArrowUpRightIcon size={14} />
+            </a>
+          </div>
+        </Reveal>
+
+        <Reveal className="gh-preview-col" delay={0.12}>
+          <Tilt3DCard maxTilt={4.5} className="bento-card gh-visual-card">
             <a
               className="github-preview"
               href={contact.github}
@@ -128,111 +264,16 @@ export default function GitHubSection() {
                 decoding="async"
               />
               <span>
-                Ver mi perfil real en GitHub
+                Explorar perfil completo @{contact.githubUser}
                 <ArrowUpRightIcon size={15} />
               </span>
             </a>
+            <p className="github-capture-note">
+              Vista verificable de actividad, repositorios y control de versiones.
+            </p>
           </Tilt3DCard>
-
-          <div className="github-side">
-            {status === 'loading' && (
-              <div className="github-stats" aria-hidden="true">
-                <div className="stat-card skeleton" />
-                <div className="stat-card skeleton" />
-                <div className="stat-card skeleton" />
-              </div>
-            )}
-
-            {status === 'ready' && profile && (
-              <div className="github-stats">
-                <div className="stat-card">
-                  <strong>
-                    <AnimatedCounter value={profile.public_repos} />
-                  </strong>
-                  <span>Repositorios</span>
-                </div>
-                <div className="stat-card">
-                  <strong>
-                    <AnimatedCounter value={profile.followers} />
-                  </strong>
-                  <span>Seguidores</span>
-                </div>
-                <div className="stat-card">
-                  <strong>
-                    {memberSince ? <AnimatedCounter value={memberSince} /> : '—'}
-                  </strong>
-                  <span>En GitHub desde</span>
-                </div>
-              </div>
-            )}
-
-            {status === 'error' && (
-              <p className="github-error">
-                Las estadísticas en vivo no están disponibles ahora. Podés verlas
-                directamente en el perfil.
-              </p>
-            )}
-
-            {status === 'ready' && repos.length > 0 && (
-              <div className="github-repos">
-                <h3>Repositorios recientes</h3>
-                {repos.map((repo) => (
-                  <a
-                    className="repo-item"
-                    key={repo.id}
-                    href={repo.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <div className="repo-main">
-                      <strong>{repo.name}</strong>
-                      <p>{repo.description || 'Proyecto en GitHub'}</p>
-                    </div>
-                    <div className="repo-meta">
-                      <span className="repo-language">
-                        <i
-                          aria-hidden="true"
-                          style={{
-                            background:
-                              LANGUAGE_COLORS[repo.language] || '#8b949e',
-                          }}
-                        />
-                        {repo.language || 'Código'}
-                      </span>
-                      {repo.stargazers_count > 0 && (
-                        <span className="repo-stars">
-                          <StarIcon size={12} />
-                          {repo.stargazers_count}
-                        </span>
-                      )}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <p className="github-capture-note">
-          Captura de mi perfil del 24/10/2026. Las estadísticas se actualizan en vivo
-          desde la API pública de GitHub.
-        </p>
-
-        <div className="github-footer">
-          <span>
-            git remote: <strong>github.com/{contact.githubUser}</strong>
-          </span>
-          <a
-            className="btn small"
-            href={contact.github}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visitar perfil
-            <ArrowUpRightIcon size={14} />
-          </a>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
     </section>
   );
 }

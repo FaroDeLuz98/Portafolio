@@ -3,31 +3,24 @@ import { motion } from 'framer-motion';
 import {
   ArrowUpRightIcon,
   CloseIcon,
+  InfoIcon,
   MenuIcon,
   SlidersIcon,
 } from './Icons.jsx';
 import Magnetic from './Magnetic.jsx';
 import ScrambleText from './ScrambleText.jsx';
+import GitHubAvatar from './GitHubAvatar.jsx';
 import { usePreferences } from '../context/PreferencesContext.jsx';
 import { contact } from '../data/siteData.js';
 
-/**
- * Enlaces del menú principal.
- * El `id` debe coincidir con el id de cada <section>.
- */
 const NAV_ITEMS = [
-  { id: 'sobre-mi', label: 'Sobre mí' },
-  { id: 'proyectos', label: 'Proyectos' },
+  { id: 'sobre-mi', label: 'Perfil & Stack' },
+  { id: 'proyectos', label: 'Sitios web' },
+  { id: 'experiencia', label: 'Trayectoria' },
   { id: 'actividad', label: 'GitHub' },
-  { id: 'experiencia', label: 'Experiencia' },
   { id: 'contacto', label: 'Contacto' },
 ];
 
-/**
- * Detecta qué sección está visible para marcar el enlace activo.
- * Usa IntersectionObserver (nativo y muy liviano) en lugar de escuchar
- * el scroll constantemente.
- */
 function useActiveSection() {
   const [active, setActive] = useState('inicio');
 
@@ -44,7 +37,7 @@ function useActiveSection() {
           if (entry.isIntersecting) setActive(entry.target.id);
         });
       },
-      { rootMargin: '-42% 0px -52% 0px', threshold: 0 }
+      { rootMargin: '-40% 0px -52% 0px', threshold: 0 }
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -54,21 +47,46 @@ function useActiveSection() {
   return active;
 }
 
+function useUruguayTime() {
+  const [time, setTime] = useState('');
+
+  useEffect(() => {
+    const format = () => {
+      try {
+        const now = new Date();
+        setTime(
+          new Intl.DateTimeFormat('es-UY', {
+            timeZone: 'America/Montevideo',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          }).format(now)
+        );
+      } catch {
+        setTime('');
+      }
+    };
+    format();
+    const id = window.setInterval(format, 30000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return time;
+}
+
 /**
- * NAVBAR · Barra de navegación fija con acceso al Estudio Visual
- * --------------------------------------------------------------
- * - Se vuelve más opaca al scrollear (clase .is-scrolled).
- * - Marca la sección activa con una píldora animada (layoutId).
- * - Incluye acceso rápido para personalizar letras, animaciones y 3D.
+ * NAVBAR · Cápsula ejecutiva flotante con acceso a la Guía Simple IT
  */
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const active = useActiveSection();
-  const { isMinimalMotion, setCustomizerOpen } = usePreferences();
+  const uyTime = useUruguayTime();
+  const { isMinimalMotion, setCustomizerOpen, openTechExplainer } =
+    usePreferences();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -76,25 +94,24 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!open) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') setOpen(false);
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false);
     };
     document.addEventListener('keydown', onKeyDown);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = prev;
       document.removeEventListener('keydown', onKeyDown);
     };
   }, [open]);
 
   useEffect(() => {
-    const media = window.matchMedia('(min-width: 861px)');
-    const onChange = (event) => {
-      if (event.matches) setOpen(false);
+    const media = window.matchMedia('(min-width: 901px)');
+    const onChange = (e) => {
+      if (e.matches) setOpen(false);
     };
     media.addEventListener('change', onChange);
     return () => media.removeEventListener('change', onChange);
@@ -102,25 +119,23 @@ export default function Navbar() {
 
   return (
     <motion.header
-      className={`topbar${scrolled ? ' is-scrolled' : ''}`}
-      initial={isMinimalMotion ? false : { y: -72, opacity: 0 }}
+      className={`nav-wrapper${scrolled ? ' is-scrolled' : ''}`}
+      initial={isMinimalMotion ? false : { y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="top-inner shell">
-        {/* Marca personal con efecto scramble al pasar el mouse */}
-        <a className="mark" href="#inicio" aria-label="Ir al inicio">
-          <span className="mark-icon" aria-hidden="true">
-            &lt;/&gt;
+      <div className="nav-capsule shell">
+        <a className="brand" href="#inicio" aria-label="Ir al inicio">
+          <span className="brand-monogram" aria-hidden="true">
+            <GitHubAvatar size={80} alt="" />
           </span>
-          <span className="mark-text">
-            <ScrambleText text="fernando" speed={30} />
-            <span className="muted">.dev</span>
+          <span className="brand-wordmark">
+            <ScrambleText text="fernando" speed={28} />
+            <span className="brand-dot">.dev</span>
           </span>
         </a>
 
-        {/* Navegación de escritorio */}
-        <nav className="main-nav" aria-label="Navegación principal">
+        <nav className="capsule-links" aria-label="Navegación principal">
           {NAV_ITEMS.map((item) => {
             const isActive = active === item.id;
             return (
@@ -132,94 +147,122 @@ export default function Navbar() {
               >
                 {isActive && (
                   <motion.span
-                    className="nav-pill"
-                    layoutId="nav-pill"
-                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                    className="capsule-active-pill"
+                    layoutId="capsule-active-pill"
+                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                   />
                 )}
-                <span className="nav-label">{item.label}</span>
+                <span className="capsule-link-text">{item.label}</span>
               </a>
             );
           })}
         </nav>
 
-        <div className="header-actions">
+        <div className="capsule-right">
+          {uyTime && (
+            <span className="uy-clock" title="Hora local en Uruguay (UTC-3)">
+              <i aria-hidden="true" /> UY {uyTime}
+            </span>
+          )}
+
           <button
             type="button"
-            className="header-studio-btn"
-            onClick={() => setCustomizerOpen((v) => !v)}
-            title="Configurar letras, animaciones y 3D"
+            className="capsule-guide-btn"
+            onClick={() => openTechExplainer('React')}
+            title="¿No venís del área IT? Mirá qué hace cada tecnología en palabras simples"
           >
-            <SlidersIcon size={14} />
-            <span>Ajustar vista</span>
+            <InfoIcon size={14} />
+            <span>Guía IT</span>
+          </button>
+
+          <button
+            type="button"
+            className="capsule-studio-btn"
+            onClick={() => setCustomizerOpen((v) => !v)}
+            title="Configurar letras, animaciones y fondo 3D"
+            aria-label="Abrir configurador visual"
+          >
+            <SlidersIcon size={15} />
           </button>
 
           <Magnetic strength={0.22}>
-            <a className="header-cta" href="#contacto">
-              Hablemos
+            <a className="capsule-cta" href="#contacto">
+              <span>Contactar</span>
               <ArrowUpRightIcon size={14} />
             </a>
           </Magnetic>
         </div>
 
-        {/* Botón hamburguesa (solo móvil) */}
         <button
           type="button"
           className="menu-button"
-          onClick={() => setOpen((value) => !value)}
+          onClick={() => setOpen((v) => !v)}
           aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
           aria-expanded={open}
-          aria-controls="mobile-nav"
+          aria-controls="mobile-drawer"
         >
           {open ? <CloseIcon /> : <MenuIcon />}
         </button>
       </div>
 
-      {/* Menú móvil */}
       <div
         className={`mobile-backdrop${open ? ' is-open' : ''}`}
         aria-hidden="true"
         onClick={() => setOpen(false)}
       />
+
       <nav
-        id="mobile-nav"
-        className={`mobile-nav${open ? ' is-open' : ''}`}
+        id="mobile-drawer"
+        className={`mobile-drawer${open ? ' is-open' : ''}`}
         aria-label="Navegación móvil"
         aria-hidden={!open}
         inert={!open ? true : undefined}
       >
-        <div className="mobile-nav-inner">
-          {NAV_ITEMS.map((item) => (
+        <div className="mobile-drawer-inner">
+          {NAV_ITEMS.map((item, idx) => (
             <a
               key={item.id}
               href={`#${item.id}`}
               className={active === item.id ? 'active' : ''}
               onClick={() => setOpen(false)}
             >
+              <span className="mobile-idx">0{idx + 1}</span>
               <span>{item.label}</span>
               <ArrowUpRightIcon size={16} />
             </a>
           ))}
 
-          <button
-            type="button"
-            className="btn ghost mobile-studio-trigger"
-            onClick={() => {
-              setOpen(false);
-              setCustomizerOpen(true);
-            }}
-          >
-            <SlidersIcon size={16} />
-            Configurar letras, 3D y animaciones
-          </button>
-
-          <a
-            className="btn primary mobile-cta"
-            href={`mailto:${contact.email}`}
-            onClick={() => setOpen(false)}
-          >
-            Escribime un correo
-          </a>
+          <div className="mobile-drawer-actions">
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={() => {
+                setOpen(false);
+                openTechExplainer('React');
+              }}
+            >
+              <InfoIcon size={16} />
+              Guía simple de tecnologías
+            </button>
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={() => {
+                setOpen(false);
+                setCustomizerOpen(true);
+              }}
+            >
+              <SlidersIcon size={16} />
+              Personalizar letras y 3D
+            </button>
+            <a
+              className="btn primary"
+              href={`mailto:${contact.email}`}
+              onClick={() => setOpen(false)}
+            >
+              Escribime un correo
+            </a>
+          </div>
         </div>
       </nav>
     </motion.header>

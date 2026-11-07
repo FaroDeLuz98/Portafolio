@@ -3,16 +3,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { usePreferences } from '../context/PreferencesContext.jsx';
 
 const ROLES = [
-  'Desarrollador Web Junior',
-  'Interfaces React & Experiencias 3D',
-  'Diseño Frontend & UI / UX',
-  'Soluciones con PHP, MySQL & SQL',
+  'Desarrollador Web Trainee / Junior',
+  'Perfil Híbrido: Informática + Comercio',
+  'Sitios Web Claros & Sistemas con Datos',
+  'Interfaces React, JS, PHP & MySQL',
 ];
 
 /**
- * ROTATING ROLES · Rotador dinámico 3D de especialidades en el Hero
- * -----------------------------------------------------------------
- * Alterna suavemente los perfiles de Fernando con un giro 3D en eje X.
+ * ROTATING ROLES · Rotador dinámico 3D orientado a empresas y clientes
  */
 export default function RotatingRoles() {
   const [index, setIndex] = useState(0);
@@ -22,7 +20,7 @@ export default function RotatingRoles() {
     if (isMinimalMotion) return undefined;
     const id = window.setInterval(() => {
       setIndex((prev) => (prev + 1) % ROLES.length);
-    }, 3200);
+    }, 3400);
     return () => window.clearInterval(id);
   }, [isMinimalMotion]);
 
