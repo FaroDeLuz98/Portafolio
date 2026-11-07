@@ -1,9 +1,9 @@
 {
   "name": "fernando-sisnande-portfolio",
   "private": true,
-  "version": "2.0.0",
+  "version": "3.0.0",
   "type": "module",
-  "description": "Portafolio personal de Fernando Sisnande · Desarrollador Web Junior (React + Vite + Framer Motion)",
+  "description": "Portafolio personal de Fernando Sisnande · Desarrollador Web Junior (React + Vite + Framer Motion + Three.js 3D)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,7 +12,8 @@
   "dependencies": {
     "framer-motion": "^14.9.1",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.2.1",
