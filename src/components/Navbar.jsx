@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { CloseIcon, MenuIcon, ArrowUpRightIcon } from './Icons.jsx';
+import { motion } from 'framer-motion';
+import {
+  ArrowUpRightIcon,
+  CloseIcon,
+  MenuIcon,
+  SlidersIcon,
+} from './Icons.jsx';
+import Magnetic from './Magnetic.jsx';
+import ScrambleText from './ScrambleText.jsx';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 import { contact } from '../data/siteData.js';
 
 /**
@@ -24,9 +32,9 @@ function useActiveSection() {
   const [active, setActive] = useState('inicio');
 
   useEffect(() => {
-    const sections = NAV_ITEMS.map((item) => document.getElementById(item.id)).filter(
-      Boolean
-    );
+    const sections = NAV_ITEMS.map((item) =>
+      document.getElementById(item.id)
+    ).filter(Boolean);
     const home = document.getElementById('inicio');
     if (home) sections.unshift(home);
 
@@ -36,7 +44,6 @@ function useActiveSection() {
           if (entry.isIntersecting) setActive(entry.target.id);
         });
       },
-      // La franja central del viewport decide qué sección está activa.
       { rootMargin: '-42% 0px -52% 0px', threshold: 0 }
     );
 
@@ -48,19 +55,18 @@ function useActiveSection() {
 }
 
 /**
- * NAVBAR · Barra de navegación fija
- * ---------------------------------
+ * NAVBAR · Barra de navegación fija con acceso al Estudio Visual
+ * --------------------------------------------------------------
  * - Se vuelve más opaca al scrollear (clase .is-scrolled).
  * - Marca la sección activa con una píldora animada (layoutId).
- * - En móvil muestra un menú desplegable animado.
+ * - Incluye acceso rápido para personalizar letras, animaciones y 3D.
  */
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const active = useActiveSection();
-  const reduceMotion = useReducedMotion();
+  const { isMinimalMotion, setCustomizerOpen } = usePreferences();
 
-  // Estado visual de la barra al bajar por la página.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
@@ -68,7 +74,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Bloquea el scroll del cuerpo y permite cerrar el menú con Escape.
   useEffect(() => {
     if (!open) return undefined;
 
@@ -86,9 +91,8 @@ export default function Navbar() {
     };
   }, [open]);
 
-  // Si se agranda la ventana, el menú móvil se cierra solo.
   useEffect(() => {
-    const media = window.matchMedia('(min-width: 821px)');
+    const media = window.matchMedia('(min-width: 861px)');
     const onChange = (event) => {
       if (event.matches) setOpen(false);
     };
@@ -99,18 +103,19 @@ export default function Navbar() {
   return (
     <motion.header
       className={`topbar${scrolled ? ' is-scrolled' : ''}`}
-      initial={reduceMotion ? false : { y: -72, opacity: 0 }}
+      initial={isMinimalMotion ? false : { y: -72, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="top-inner shell">
-        {/* Marca personal */}
+        {/* Marca personal con efecto scramble al pasar el mouse */}
         <a className="mark" href="#inicio" aria-label="Ir al inicio">
           <span className="mark-icon" aria-hidden="true">
             &lt;/&gt;
           </span>
-          <span>
-            fernando<span className="muted">.dev</span>
+          <span className="mark-text">
+            <ScrambleText text="fernando" speed={30} />
+            <span className="muted">.dev</span>
           </span>
         </a>
 
@@ -138,11 +143,24 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Llamado a la acción visible en escritorio */}
-        <a className="header-cta" href="#contacto">
-          Hablemos
-          <ArrowUpRightIcon size={14} />
-        </a>
+        <div className="header-actions">
+          <button
+            type="button"
+            className="header-studio-btn"
+            onClick={() => setCustomizerOpen((v) => !v)}
+            title="Configurar letras, animaciones y 3D"
+          >
+            <SlidersIcon size={14} />
+            <span>Ajustar vista</span>
+          </button>
+
+          <Magnetic strength={0.22}>
+            <a className="header-cta" href="#contacto">
+              Hablemos
+              <ArrowUpRightIcon size={14} />
+            </a>
+          </Magnetic>
+        </div>
 
         {/* Botón hamburguesa (solo móvil) */}
         <button
@@ -157,7 +175,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Menú móvil: se anima con CSS y queda fuera del foco cuando está cerrado */}
+      {/* Menú móvil */}
       <div
         className={`mobile-backdrop${open ? ' is-open' : ''}`}
         aria-hidden="true"
@@ -182,6 +200,19 @@ export default function Navbar() {
               <ArrowUpRightIcon size={16} />
             </a>
           ))}
+
+          <button
+            type="button"
+            className="btn ghost mobile-studio-trigger"
+            onClick={() => {
+              setOpen(false);
+              setCustomizerOpen(true);
+            }}
+          >
+            <SlidersIcon size={16} />
+            Configurar letras, 3D y animaciones
+          </button>
+
           <a
             className="btn primary mobile-cta"
             href={`mailto:${contact.email}`}

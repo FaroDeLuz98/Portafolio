@@ -1,10 +1,12 @@
+import { Suspense, lazy } from 'react';
+
+const ThreeBackground = lazy(() => import('./ThreeBackground.jsx'));
+
 /**
- * BACKGROUND · Fondo decorativo global
- * ------------------------------------
- * Tres "orbes" de luz que flotan lentamente y una grilla técnica.
- * Todo es puramente visual: aria-hidden evita que los lectores de
- * pantalla lo anuncien. Las animaciones se desactivan con
- * "prefers-reduced-motion" desde el CSS.
+ * BACKGROUND · Fondo decorativo global + Escena 3D WebGL diferida
+ * ---------------------------------------------------------------
+ * Carga Three.js en un chunk asíncrono separado para que el primer
+ * render de la interfaz sea instantáneo.
  */
 export default function Background() {
   return (
@@ -13,6 +15,9 @@ export default function Background() {
       <div className="bg-orb bg-orb--green" />
       <div className="bg-orb bg-orb--blue" />
       <div className="bg-orb bg-orb--pink" />
+      <Suspense fallback={null}>
+        <ThreeBackground />
+      </Suspense>
     </div>
   );
 }

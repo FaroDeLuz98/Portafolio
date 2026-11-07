@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpIcon } from './Icons.jsx';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
 /**
  * BACK TO TOP · Botón flotante "volver arriba"
@@ -10,11 +11,11 @@ import { ArrowUpIcon } from './Icons.jsx';
  */
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const { isMinimalMotion } = usePreferences();
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 500);
-    onScroll(); // revisa el estado inicial (por si se recarga a mitad de página)
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -22,7 +23,7 @@ export default function BackToTop() {
   const goTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: reduceMotion ? 'auto' : 'smooth',
+      behavior: isMinimalMotion ? 'auto' : 'smooth',
     });
   };
 
@@ -38,7 +39,7 @@ export default function BackToTop() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.7, y: 12 }}
           transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-          whileHover={reduceMotion ? undefined : { y: -3 }}
+          whileHover={isMinimalMotion ? undefined : { y: -4, scale: 1.06 }}
         >
           <ArrowUpIcon size={18} />
         </motion.button>

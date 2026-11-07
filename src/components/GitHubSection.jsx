@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Reveal from './Reveal.jsx';
 import SectionHeading from './SectionHeading.jsx';
+import Tilt3DCard from './Tilt3DCard.jsx';
+import AnimatedCounter from './AnimatedCounter.jsx';
 import { ArrowUpRightIcon, StarIcon } from './Icons.jsx';
 import { contact } from '../data/siteData.js';
 
@@ -21,11 +23,9 @@ const LANGUAGE_COLORS = {
 };
 
 /**
- * GITHUB SECTION · Actividad real del perfil
- * -----------------------------------------
+ * GITHUB SECTION · Actividad real del perfil con vista 3D y contadores
+ * --------------------------------------------------------------------
  * Trae datos públicos desde la API de GitHub (sin token, sin backend).
- * Si la API falla o se supera el límite de pedidos, se muestran solo la
- * captura y el enlace al perfil, sin romper la página.
  */
 export default function GitHubSection() {
   const [profile, setProfile] = useState(null);
@@ -62,7 +62,6 @@ export default function GitHubSection() {
         setRepos(Array.isArray(reposData) ? reposData.slice(0, 3) : []);
         setStatus('ready');
       } catch (error) {
-        // El aborto ocurre al desmontar el componente: no es un error real.
         if (error.name !== 'AbortError') setStatus('error');
       }
     }
@@ -111,30 +110,31 @@ export default function GitHubSection() {
         </div>
 
         <div className="github-body">
-          {/* Captura del perfil: siempre visible, aunque falle la API */}
-          <a
-            className="github-preview"
-            href={contact.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Abrir el perfil de Fernando en GitHub"
-          >
-            <img
-              src="/assets/github-profile.webp"
-              width="1916"
-              height="910"
-              alt="Captura del perfil de GitHub FaroDeLuz98 con repositorios y contribuciones"
-              loading="lazy"
-              decoding="async"
-            />
-            <span>
-              Ver mi perfil real en GitHub
-              <ArrowUpRightIcon size={15} />
-            </span>
-          </a>
+          {/* Captura del perfil con inclinación 3D */}
+          <Tilt3DCard maxTilt={4.5} className="github-preview-tilt">
+            <a
+              className="github-preview"
+              href={contact.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Abrir el perfil de Fernando en GitHub"
+            >
+              <img
+                src="/assets/github-profile.webp"
+                width="1916"
+                height="910"
+                alt="Captura del perfil de GitHub FaroDeLuz98 con repositorios y contribuciones"
+                loading="lazy"
+                decoding="async"
+              />
+              <span>
+                Ver mi perfil real en GitHub
+                <ArrowUpRightIcon size={15} />
+              </span>
+            </a>
+          </Tilt3DCard>
 
           <div className="github-side">
-            {/* Estadísticas en vivo */}
             {status === 'loading' && (
               <div className="github-stats" aria-hidden="true">
                 <div className="stat-card skeleton" />
@@ -146,15 +146,21 @@ export default function GitHubSection() {
             {status === 'ready' && profile && (
               <div className="github-stats">
                 <div className="stat-card">
-                  <strong>{profile.public_repos}</strong>
+                  <strong>
+                    <AnimatedCounter value={profile.public_repos} />
+                  </strong>
                   <span>Repositorios</span>
                 </div>
                 <div className="stat-card">
-                  <strong>{profile.followers}</strong>
+                  <strong>
+                    <AnimatedCounter value={profile.followers} />
+                  </strong>
                   <span>Seguidores</span>
                 </div>
                 <div className="stat-card">
-                  <strong>{memberSince}</strong>
+                  <strong>
+                    {memberSince ? <AnimatedCounter value={memberSince} /> : '—'}
+                  </strong>
                   <span>En GitHub desde</span>
                 </div>
               </div>
@@ -167,7 +173,6 @@ export default function GitHubSection() {
               </p>
             )}
 
-            {/* Últimos repositorios actualizados */}
             {status === 'ready' && repos.length > 0 && (
               <div className="github-repos">
                 <h3>Repositorios recientes</h3>

@@ -102,3 +102,37 @@ export function StarIcon({ size = 14 }) {
     </svg>
   );
 }
+
+export function SlidersIcon({ size = 16 }) {
+  return (
+    <svg {...base} width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 8h4M18 16h4" />
+    </svg>
+  );
+}
+
+export function Cube3DIcon({ size = 16 }) {
+  return (
+    <svg {...base} width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7L12 2.5Z" />
+      <path d="M12 21.5V12M20.5 7 12 12 3.5 7" />
+    </svg>
+  );
+}
+
+export function CodeIcon({ size = 16 }) {
+  return (
+    <svg {...base} width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14" />
+    </svg>
+  );
+}
+
+export function EyeIcon({ size = 16 }) {
+  return (
+    <svg {...base} width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" />
+      <circle cx="12" cy="12" r="2.8" />
+    </svg>
+  );
+}

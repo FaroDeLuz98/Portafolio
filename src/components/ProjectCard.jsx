@@ -1,46 +1,43 @@
-import { useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import Reveal from './Reveal.jsx';
-import { ArrowUpRightIcon } from './Icons.jsx';
+import Tilt3DCard from './Tilt3DCard.jsx';
+import { ArrowUpRightIcon, EyeIcon } from './Icons.jsx';
 
 /**
- * PROJECT CARD · Tarjeta individual de proyecto
- * ---------------------------------------------
+ * PROJECT CARD · Tarjeta de proyecto con inclinación 3D y capas de profundidad
+ * ----------------------------------------------------------------------------
  * - Aparece al hacer scroll (Reveal).
- * - Se eleva suavemente al pasar el mouse.
- * - Un "spotlight" sigue el cursor dentro de la tarjeta usando variables CSS
- *   (--mx / --my), sin re-renderizar React en cada movimiento.
- * - Cada proyecto tiene su propio color de acento (--accent / --accent-rgb).
+ * - Se inclina físicamente en 3D siguiendo el puntero (Tilt3DCard).
+ * - Proyecta un spotlight radial del color de identidad de cada proyecto.
+ * - Incluye botón de "Vista rápida" para abrir el modal interactivo.
  */
-export default function ProjectCard({ project, index }) {
-  const cardRef = useRef(null);
-  const reduceMotion = useReducedMotion();
-
-  // Actualiza la posición del brillo que sigue al cursor.
-  const handlePointerMove = (event) => {
-    if (reduceMotion || !cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    cardRef.current.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-    cardRef.current.style.setProperty('--my', `${event.clientY - rect.top}px`);
-  };
-
+export default function ProjectCard({ project, index, onPreview }) {
   return (
     <Reveal className="project-reveal" delay={index * 0.08} amount={0.12}>
-      <motion.article
-        ref={cardRef}
+      <Tilt3DCard
+        as="article"
+        maxTilt={6.5}
         className="project-card"
         style={{
           '--accent': project.accent,
           '--accent-rgb': project.accentRgb,
         }}
-        onPointerMove={handlePointerMove}
-        whileHover={reduceMotion ? undefined : { y: -8 }}
-        transition={{ type: 'spring', stiffness: 280, damping: 24 }}
       >
-        {/* Brillo que sigue al cursor (solo decorativo) */}
+        {/* Brillo radial que sigue al cursor */}
         <span className="project-spotlight" aria-hidden="true" />
 
-        <div className="project-visual">
+        <div
+          className="project-visual"
+          onClick={() => onPreview?.(project)}
+          role="button"
+          tabIndex={0}
+          aria-label={`Abrir vista rápida de ${project.title}`}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onPreview?.(project);
+            }
+          }}
+        >
           <img
             src={project.image}
             alt={project.imageAlt}
@@ -51,6 +48,9 @@ export default function ProjectCard({ project, index }) {
           />
           <span className="project-index" aria-hidden="true">
             {project.number}
+          </span>
+          <span className="project-visual-badge" aria-hidden="true">
+            <EyeIcon size={14} /> Vista rápida
           </span>
         </div>
 
@@ -81,9 +81,18 @@ export default function ProjectCard({ project, index }) {
               <span>{project.linkLabel}</span>
               <ArrowUpRightIcon size={17} />
             </a>
+
+            <button
+              type="button"
+              className="project-preview-btn"
+              onClick={() => onPreview?.(project)}
+            >
+              <EyeIcon size={14} />
+              <span>Detalles</span>
+            </button>
           </div>
         </div>
-      </motion.article>
+      </Tilt3DCard>
     </Reveal>
   );
 }

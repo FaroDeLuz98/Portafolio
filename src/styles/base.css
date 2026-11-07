@@ -1,46 +1,53 @@
 /* ==========================================================================
-   BASE · Variables, reset, tipografía y componentes globales
+   BASE · Variables reactivas, tipografía configurable y componentes globales
    ==========================================================================
-   Este archivo define el "sistema de diseño": colores, fuentes, botones,
-   etiquetas y utilidades que se reutilizan en todo el sitio.
-   Los demás archivos (layout, sections, responsive) dependen de estas variables.
+   Este archivo define el sistema de diseño base. Las variables de tipografía,
+   escala, espaciado y color se actualizan en vivo desde PreferencesContext.
    ========================================================================== */
 
 :root {
-  /* Paleta principal (tema oscuro) */
   color-scheme: dark;
-  --bg: #080c10;
+  --bg: #070b10;
   --bg-soft: #0b1118;
   --surface: #111821;
   --surface-2: #16202b;
   --surface-3: #1b2632;
 
   /* Bordes */
-  --line: #26313d;
-  --line-strong: #344252;
+  --line: #25313e;
+  --line-strong: #344354;
 
   /* Texto */
-  --text: #e8eef3;
-  --muted: #8b98a5;
-  --soft: #a8b4bf;
+  --text: #ebf1f6;
+  --muted: #8b99a7;
+  --soft: #acb8c4;
 
-  /* Colores de acento */
+  /* Colores de acento dinámicos (configurables desde Estudio Visual) */
   --green: #3fb950;
+  --green-dark: #2ea043;
   --lime: #7ee787;
   --blue: #79c0ff;
   --sky: #38bdf8;
+  --accent-rgb: 63, 185, 80;
+  --lime-rgb: 126, 231, 135;
+  --secondary-rgb: 56, 189, 248;
 
   /* Medidas y radios */
   --radius: 18px;
   --radius-sm: 11px;
   --header-h: 74px;
-  --max: 1160px;
+  --max: 1180px;
 
-  /* Tipografías */
-  --font-sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  /* Sistema tipográfico dinámico */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --heading-weight: 700;
+  --font-scale: 1;
+  --heading-tracking: -0.045em;
+  --body-tracking: 0em;
 
-  /* Curva de animación reutilizada */
+  /* Curva de animación */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -52,6 +59,7 @@
 }
 
 html {
+  font-size: calc(16px * var(--font-scale, 1));
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 22px);
   -webkit-text-size-adjust: 100%;
@@ -61,15 +69,17 @@ body {
   margin: 0;
   background-color: var(--bg);
   background-image:
-    radial-gradient(circle at 78% -10%, rgba(63, 185, 80, 0.09), transparent 38%),
-    radial-gradient(circle at 4% 28%, rgba(56, 189, 248, 0.055), transparent 32%);
+    radial-gradient(circle at 78% -10%, rgba(var(--accent-rgb), 0.11), transparent 40%),
+    radial-gradient(circle at 4% 28%, rgba(var(--secondary-rgb), 0.065), transparent 34%);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 15.5px;
-  line-height: 1.65;
+  font-size: calc(15.5px * var(--font-scale, 1));
+  letter-spacing: var(--body-tracking, 0em);
+  line-height: 1.68;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: clip; /* evita scroll horizontal por elementos decorativos */
+  overflow-x: clip;
+  transition: background-color 0.35s, color 0.25s;
 }
 
 #root {
@@ -96,7 +106,13 @@ button {
 h1,
 h2,
 h3,
-h4,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--heading-weight, 700);
+  letter-spacing: var(--heading-tracking, -0.04em);
+}
+
 p {
   margin: 0;
 }
@@ -107,13 +123,13 @@ ul {
   list-style: none;
 }
 
-/* Selección de texto con el verde de la marca */
+/* Selección de texto con el acento activo */
 ::selection {
-  background: rgba(126, 231, 135, 0.28);
+  background: rgba(var(--lime-rgb), 0.28);
   color: #ffffff;
 }
 
-/* Barra de scroll personalizada (Chrome / Edge / Safari) */
+/* Barra de scroll personalizada */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -121,17 +137,18 @@ ul {
   background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #263440;
+  background: #24323f;
   border: 2px solid var(--bg);
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #35495a;
+  background: rgba(var(--accent-rgb), 0.65);
 }
 
-/* Accesibilidad: foco visible para navegación con teclado */
+/* Accesibilidad: foco visible */
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+[role='button']:focus-visible {
   outline: 2px solid var(--lime);
   outline-offset: 3px;
   border-radius: 6px;
@@ -151,12 +168,12 @@ button:focus-visible {
   color: var(--green);
 }
 
-/* Enlace para saltar la navegación (aparece al enfocarlo con Tab) */
+/* Enlace para saltar la navegación */
 .skip-link {
   position: absolute;
   top: -70px;
   left: 16px;
-  z-index: 200;
+  z-index: 250;
   padding: 11px 16px;
   border-radius: 9px;
   background: var(--green);
@@ -175,13 +192,13 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 9px;
-  padding: 12px 20px;
+  padding: 12px 21px;
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
+  border-radius: 11px;
   background: var(--surface-2);
   color: var(--text);
-  font-family: inherit;
-  font-size: 13.5px;
+  font-family: var(--font-sans);
+  font-size: calc(13.5px * var(--font-scale, 1));
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
@@ -194,6 +211,25 @@ button:focus-visible {
     color 0.25s;
 }
 
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 80%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.65s var(--ease);
+  pointer-events: none;
+}
+
+.btn:hover::after {
+  transform: translateX(130%);
+}
+
 .btn svg {
   flex-shrink: 0;
 }
@@ -204,21 +240,21 @@ button:focus-visible {
 
 .btn.primary {
   border-color: transparent;
-  background: linear-gradient(135deg, var(--green), #2ea043);
-  color: #04130a;
-  box-shadow: 0 12px 32px -14px rgba(63, 185, 80, 0.85);
+  background: linear-gradient(135deg, var(--lime), var(--green));
+  color: #05110b;
+  box-shadow: 0 14px 34px -12px rgba(var(--accent-rgb), 0.78);
 }
 .btn.primary:hover {
-  background: linear-gradient(135deg, var(--lime), var(--green));
-  box-shadow: 0 18px 40px -14px rgba(126, 231, 135, 0.7);
+  box-shadow: 0 20px 44px -12px rgba(var(--lime-rgb), 0.75);
 }
 
 .btn.ghost {
-  background: rgba(22, 32, 43, 0.72);
+  background: rgba(20, 29, 39, 0.72);
+  backdrop-filter: blur(10px);
   color: var(--text);
 }
 .btn.ghost:hover {
-  border-color: #536474;
+  border-color: rgba(var(--lime-rgb), 0.42);
   background: var(--surface-3);
 }
 
@@ -228,10 +264,9 @@ button:focus-visible {
   font-size: 12.5px;
 }
 
-/* Botón de copiar correo: cambia a verde cuando copia */
 .copy-btn.is-copied {
-  border-color: rgba(126, 231, 135, 0.55);
-  background: rgba(63, 185, 80, 0.12);
+  border-color: rgba(var(--lime-rgb), 0.6);
+  background: rgba(var(--accent-rgb), 0.14);
   color: var(--lime);
 }
 
@@ -243,8 +278,8 @@ button:focus-visible {
   padding: 6px 10px;
   border: 1px solid #344151;
   border-radius: 99px;
-  background: #26313d;
-  color: #a6b7c7;
+  background: #222d39;
+  color: #a8b9c9;
   font-family: var(--font-mono);
   font-size: 10.5px;
   line-height: 1;
@@ -252,12 +287,12 @@ button:focus-visible {
 }
 
 .pill.green-pill {
-  border-color: rgba(63, 185, 80, 0.35);
-  background: rgba(63, 185, 80, 0.12);
-  color: #9decad;
+  border-color: rgba(var(--accent-rgb), 0.38);
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--lime);
 }
 
-/* Punto verde "en línea" con animación de pulso */
+/* Punto "en línea" con pulso */
 .online-dot {
   display: inline-block;
   width: 7px;
@@ -265,23 +300,23 @@ button:focus-visible {
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--green);
-  box-shadow: 0 0 0 4px rgba(63, 185, 80, 0.14);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.16);
   animation: pulse-dot 2.4s ease-in-out infinite;
 }
 
 @keyframes pulse-dot {
   0%,
   100% {
-    box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.16);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
     opacity: 1;
   }
   50% {
-    box-shadow: 0 0 0 6px rgba(63, 185, 80, 0.04);
+    box-shadow: 0 0 0 7px rgba(var(--accent-rgb), 0.04);
     opacity: 0.78;
   }
 }
 
-/* Cursor de terminal que titila */
+/* Cursor de terminal */
 .cursor {
   color: var(--green);
   animation: blink 1s steps(1) infinite;
@@ -293,21 +328,22 @@ button:focus-visible {
   }
 }
 
-/* Texto con degradado animado */
-.gradient {
-  color: var(--lime); /* fallback si el navegador no soporta background-clip */
-  background: linear-gradient(
-    100deg,
-    #7ee787 0%,
-    #3fb950 28%,
-    #79c0ff 62%,
-    #7ee787 100%
+/* Texto con degradado (soporta tanto bloque simple como caracteres cinéticos 3D) */
+.gradient:not(:has(.kinetic-chars)),
+.gradient .kinetic-char {
+  color: var(--lime);
+  background-image: linear-gradient(
+    110deg,
+    var(--lime) 0%,
+    var(--green) 36%,
+    var(--sky) 74%,
+    var(--lime) 100%
   );
   background-size: 220% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-shift 9s linear infinite;
+  animation: gradient-shift 8s linear infinite;
 }
 
 @keyframes gradient-shift {
@@ -322,35 +358,33 @@ button:focus-visible {
   align-items: center;
   gap: 6px;
   color: var(--lime);
-  font-size: 13px;
+  font-size: calc(13px * var(--font-scale, 1));
   font-weight: 700;
   white-space: nowrap;
   transition: color 0.2s, gap 0.25s var(--ease);
 }
 .inline-link:hover {
-  gap: 9px;
-  color: #b1fbbf;
+  gap: 10px;
+  color: #ffffff;
 }
 
-/* ---------- Respeto por "reducir movimiento" ---------- */
+/* ---------- Respeto por movimiento reducido o modo mínimo ---------- */
+html[data-motion='minimal'] {
+  scroll-behavior: auto;
+}
+
+html[data-motion='minimal'] .tech-track,
+html[data-motion='minimal'] .bg-orb,
+html[data-motion='minimal'] .contact-glow {
+  animation: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-
-  .tech-track {
-    animation: none !important;
-  }
-
+  .tech-track,
   .bg-orb,
   .contact-glow {
     animation: none !important;
