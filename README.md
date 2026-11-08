@@ -11,7 +11,7 @@ Este repositorio contiene el código fuente de mi portafolio, donde presento mis
 
 ### 🌐 Portafolio en línea
 
-**[Visitar mi portafolio](https://portafolio-fer-28ed.vercel.app/))**
+**[Visitar mi portafolio](https://fernando-sisnande-portfolio.vercel.app)**
 
 ---
 
@@ -65,13 +65,15 @@ Mi objetivo profesional es seguir desarrollando mis habilidades y comenzar mi tr
 
 | Tecnología | Función |
 |------------|---------|
-| React 19 | Construcción de interfaces |
+| React 19 | Construcción modular de escenas e interfaces |
 | JavaScript / JSX | Lógica e interactividad |
-| Vite 8 | Desarrollo y compilación |
-| CSS | Estilos y diseño responsive |
-| Framer Motion | Animaciones e interacciones |
-| GitHub API | Integración de información pública |
-| Vercel | Alojamiento y despliegue |
+| Vite 8 | Desarrollo y compilación optimizada |
+| GSAP + ScrollTrigger | Coreografías de entrada, máscaras y transiciones narrativas con scroll |
+| Three.js | Campo atmosférico WebGL 3D de partículas y malla lumínica |
+| Lenis | Desplazamiento inercial suave sincronizado con GSAP |
+| CSS Avanzado | Perspectiva 2.5D, iluminación cinematográfica y diseño responsive |
+| GitHub API | Integración de repositorios públicos verificados |
+| Vercel | Alojamiento y despliegue continuo |
 
 ---
 
@@ -92,9 +94,17 @@ Plataforma de comercio electrónico enfocada en productos informáticos.
 
 **Tecnologías:** PHP, MySQL, HTML, CSS, JavaScript y Bootstrap.
 
-### MR Couiffer — Sitio web comercial
+### Maktub · Tu Liberación — Plataforma digital interactiva
 
-Proyecto web orientado a la presentación digital de un emprendimiento, priorizando una experiencia visual moderna y una navegación intuitiva.
+Experiencia web interactiva con recursos, contenidos y estructura clara orientada al acompañamiento del usuario.
+
+### Juglares · Hugo Cabeza — Landing editorial para autor
+
+Sitio web para presentación y promoción literaria con diseño de lectura limpia y CTAs directos.
+
+### MR Coiffeur — Sitio web comercial
+
+Proyecto web orientado a la presentación digital de un emprendimiento en Uruguay, priorizando una experiencia visual moderna y una navegación intuitiva.
 
 **Características:**
 - Diseño moderno y responsive.
@@ -246,7 +256,7 @@ Estoy abierto a oportunidades de aprendizaje, colaboración y desarrollo profesi
 
 ## Estado del proyecto
 
-**Versión:** 2.0
+**Versión:** 4.0 (Edición Cinematográfica)
 
 El portafolio se encuentra en desarrollo y mejora continua.
 
