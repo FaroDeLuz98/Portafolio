@@ -1,52 +1,75 @@
-import { PreferencesProvider } from './context/PreferencesContext.jsx';
-import Background from './components/Background.jsx';
-import CursorGlow from './components/CursorGlow.jsx';
-import ScrollProgress from './components/ScrollProgress.jsx';
-import Navbar from './components/Navbar.jsx';
-import Hero from './components/Hero.jsx';
-import TechMarquee from './components/TechMarquee.jsx';
-import About from './components/About.jsx';
-import Projects from './components/Projects.jsx';
-import Experience from './components/Experience.jsx';
-import GitHubSection from './components/GitHubSection.jsx';
-import Contact from './components/Contact.jsx';
-import Footer from './components/Footer.jsx';
-import BackToTop from './components/BackToTop.jsx';
-import ExperienceCustomizer from './components/ExperienceCustomizer.jsx';
-import TechExplainerModal from './components/TechExplainerModal.jsx';
+import { useEffect, useState } from 'react';
+import CinematicNavbar from './components/cinematic/CinematicNavbar.jsx';
+import HeroScene from './components/cinematic/HeroScene.jsx';
+import AboutScene from './components/cinematic/AboutScene.jsx';
+import ProjectsScene from './components/cinematic/ProjectsScene.jsx';
+import TechnologiesScene from './components/cinematic/TechnologiesScene.jsx';
+import ContactScene from './components/cinematic/ContactScene.jsx';
+import { navSections } from './data/portfolioData.js';
 
-/**
- * APP · Portafolio Profesional Verde Corporativo + Guía Interactiva IT
- * --------------------------------------------------------------------
- * Pensado para grandes empresas, equipos de selección (RRHH) y clientes
- * que no pertenecen al sector tecnológico, conservando toda la experiencia 3D.
- */
 export default function App() {
+  const [activeSection, setActiveSection] = useState('inicio');
+
+  // Seguimiento suave y nativo de la sección activa
+  useEffect(() => {
+    let ticking = false;
+
+    const updateActiveSection = () => {
+      ticking = false;
+      const probeY = window.scrollY + window.innerHeight * 0.38;
+      let currentId = navSections[0].id;
+
+      for (const sec of navSections) {
+        const el = document.getElementById(sec.id);
+        if (!el) continue;
+        const topDoc = el.getBoundingClientRect().top + window.scrollY;
+        if (probeY >= topDoc) {
+          currentId = sec.id;
+        }
+      }
+
+      setActiveSection(currentId);
+    };
+
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+    };
+  }, []);
+
+  // Navegación nativa fluida a cualquier sección respetando el header superior (-75px)
+  const handleNavigate = (sectionId) => {
+    setActiveSection(sectionId);
+    if (sectionId === 'inicio') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const target = document.getElementById(sectionId);
+    if (target) {
+      const targetY = Math.max(0, target.getBoundingClientRect().top + window.scrollY - 75);
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <PreferencesProvider>
-      <a className="skip-link" href="#contenido">
-        Saltar al contenido
+    <div className="cine-app">
+      <a href="#contenido-principal" className="cine-skip-link">
+        Saltar al contenido principal
       </a>
 
-      <Background />
-      <CursorGlow />
-      <ScrollProgress />
-      <Navbar />
+      <CinematicNavbar activeSection={activeSection} onNavigate={handleNavigate} />
 
-      <main id="contenido">
-        <Hero />
-        <TechMarquee />
-        <About />
-        <Projects />
-        <Experience />
-        <GitHubSection />
-        <Contact />
+      <main id="contenido-principal" className="cine-main">
+        <HeroScene onNavigate={handleNavigate} />
+        <AboutScene />
+        <ProjectsScene />
+        <TechnologiesScene />
+        <ContactScene onNavigate={handleNavigate} />
       </main>
-
-      <Footer />
-      <TechExplainerModal />
-      <ExperienceCustomizer />
-      <BackToTop />
-    </PreferencesProvider>
+    </div>
   );
 }
