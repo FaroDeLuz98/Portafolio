@@ -94,8 +94,8 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!open) return undefined;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
 
     const onKeyDown = (e) => {
       if (e.key === 'Escape') setOpen(false);
@@ -103,7 +103,7 @@ export default function Navbar() {
     document.addEventListener('keydown', onKeyDown);
 
     return () => {
-      document.body.style.overflow = prev;
+      document.documentElement.style.overflow = prev;
       document.removeEventListener('keydown', onKeyDown);
     };
   }, [open]);

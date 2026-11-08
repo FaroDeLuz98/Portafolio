@@ -1,5 +1,11 @@
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { profile } from '../../data/portfolioData.js';
+import { responsive } from '../../animations/motion.js';
 import { ArrowDownIcon, ArrowRightIcon } from './CinematicIcons.jsx';
+
+gsap.registerPlugin(ScrollTrigger);
 
 function MaskedNameLine({ text }) {
   return (
@@ -15,8 +21,9 @@ function MaskedNameLine({ text }) {
 
 /**
  * Mitad (trasera o delantera) del anillo metálico luminoso 3D.
+ * Separamos contenedores de scroll, intro y tilt para evitar cualquier colisión de matrices CSS/GSAP.
  */
-function OrbitalRingHalf({ position = 'front' }) {
+function OrbitalRingHalf({ position = 'front', scrollRef, introRef }) {
   const gradId = `metallic-ring-grad-${position}`;
   const rimId = `electric-rim-grad-${position}`;
   const flareId = `flare-glow-${position}`;
@@ -26,8 +33,8 @@ function OrbitalRingHalf({ position = 'front' }) {
       className={`hero-ring-plane hero-ring-plane--${position}`}
       aria-hidden="true"
     >
-      <div className="hero-ring-scroll">
-        <div className="hero-ring-intro">
+      <div className="hero-ring-scroll" ref={scrollRef}>
+        <div className="hero-ring-intro" ref={introRef}>
           <div className={`hero-ring-tilt hero-ring-tilt--${position}`}>
             <svg
               className="hero-ring-svg"
@@ -119,27 +126,262 @@ function OrbitalRingHalf({ position = 'front' }) {
   );
 }
 
-export default function HeroScene({ onNavigate }) {
+export default function HeroScene({ onNavigate, reducedMotion = false, isMobile = false }) {
+  const sectionRef = useRef(null);
+  const heroPinRef = useRef(null);
+  const skyImgRef = useRef(null);
+  const stageLightRef = useRef(null);
+  const copyRef = useRef(null);
+  const cameraRigRef = useRef(null);
+  const stageRef = useRef(null);
+  const statueGroupRef = useRef(null);
+  const statueIntroRef = useRef(null);
+  const crackGlowRef = useRef(null);
+  const ringBackRef = useRef(null);
+  const ringFrontRef = useRef(null);
+  const ringBackIntroRef = useRef(null);
+  const ringFrontIntroRef = useRef(null);
+  const haloRef = useRef(null);
+  const cloudBackRef = useRef(null);
+  const cloudNebulaRef = useRef(null);
+  const cloudFrontRef = useRef(null);
+  const rock1Ref = useRef(null);
+  const rock2Ref = useRef(null);
+  const rock3Ref = useRef(null);
+  const rock4Ref = useRef(null);
+  const scrollCueRef = useRef(null);
+  const horizonCurveRef = useRef(null);
+  const previewStripRef = useRef(null);
+  const transitionVeilRef = useRef(null);
+  const veilMistRef = useRef(null);
+  const veilColumnHintRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || reducedMotion) return undefined;
+
+    let media;
+    const ctx = gsap.context(() => {
+      const chars = section.querySelectorAll('.hero-char');
+      const eyebrow = section.querySelector('.hero-eyebrow');
+      const lead = section.querySelector('.hero-lead');
+      const actions = section.querySelector('.hero-actions');
+      const previewCards = section.querySelectorAll('.hero-preview-card');
+      const rockIntros = section.querySelectorAll('.hero-rock-intro');
+
+      // =======================================================================
+      // ETAPA 1 — PRESENTACIÓN AL CARGAR
+      // =======================================================================
+      const intro = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      intro
+        .fromTo(
+          cloudBackRef.current,
+          { opacity: 0 },
+          { opacity: 0.62, duration: 1.05 },
+          0.04
+        )
+        .fromTo(
+          haloRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 1.05 },
+          0.04
+        )
+        .fromTo(
+          statueIntroRef.current,
+          { autoAlpha: 0, y: 32, scale: 0.94, filter: 'brightness(0.28)' },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            filter: 'brightness(1)',
+            duration: 1.2,
+            clearProps: 'filter',
+          },
+          0.1
+        )
+        .fromTo(
+          crackGlowRef.current,
+          { opacity: 0 },
+          { opacity: 0.92, duration: 1.0, ease: 'power2.inOut' },
+          0.3
+        )
+        .fromTo(
+          rockIntros,
+          { autoAlpha: 0, scale: 0.72 },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.95,
+            stagger: 0.07,
+          },
+          0.35
+        )
+        .fromTo(
+          [ringBackIntroRef.current, ringFrontIntroRef.current],
+          { autoAlpha: 0, scale: 0.84 },
+          { autoAlpha: 1, scale: 1, duration: 1.1, ease: 'expo.out' },
+          0.46
+        )
+        .fromTo(
+          eyebrow,
+          { autoAlpha: 0, x: -16 },
+          { autoAlpha: 1, x: 0, duration: 0.62 },
+          0.58
+        )
+        .fromTo(
+          chars,
+          { yPercent: 112, opacity: 0 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.022,
+            ease: 'power4.out',
+          },
+          0.64
+        )
+        .fromTo(
+          [lead, actions],
+          { autoAlpha: 0, y: 18 },
+          { autoAlpha: 1, y: 0, duration: 0.72, stagger: 0.08, clearProps: 'transform' },
+          0.92
+        )
+        .fromTo(
+          previewCards,
+          { autoAlpha: 0, y: 20 },
+          { autoAlpha: 1, y: 0, duration: 0.68, stagger: 0.06, clearProps: 'transform' },
+          1.02
+        );
+
+      // =======================================================================
+      // SCROLL: una sola línea de tiempo con scrub mientras el Hero sale de pantalla.
+      // Cada propiedad de cada elemento se anima UNA sola vez (sin solapes), así que
+      // el movimiento es idéntico al bajar, al subir o al saltar desde el menú.
+      // =======================================================================
+      const mm = gsap.matchMedia();
+      media = mm;
+
+      responsive(mm, ({ desk, k, scrub }) => {
+        const tl = gsap.timeline({
+          defaults: { ease: 'none', duration: 1 },
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: 'bottom top',
+            scrub,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        tl.to(skyImgRef.current, { scale: 1.12, yPercent: 5 }, 0)
+          .to(stageLightRef.current, { scale: 1.2, opacity: 0.9 }, 0)
+          .to(cloudNebulaRef.current, { x: -70 * k, y: 24 * k, scale: 1.12 }, 0)
+          .to(cloudFrontRef.current, { y: -40 * k, scale: 1.2 }, 0)
+          .to(cameraRigRef.current, { scale: 1 + 0.12 * k, yPercent: -3 * k }, 0)
+          .to(statueGroupRef.current, { scale: 1 + 0.14 * k, y: 44 * k }, 0)
+          .to(
+            [ringBackRef.current, ringFrontRef.current],
+            { rotate: -14, scaleX: 1 + 0.14 * k, scaleY: 1 + 0.26 * k, y: 30 * k },
+            0
+          )
+          .to(rock1Ref.current, { x: 125 * k, y: -90 * k, rotate: 22, scale: 1.2 }, 0)
+          .to(rock4Ref.current, { x: -135 * k, y: -60 * k, rotate: -22, scale: 1.2 }, 0)
+          .to(rock2Ref.current, { x: -95 * k, y: -115 * k, rotate: 14, scale: 1.12 }, 0)
+          .to(rock3Ref.current, { x: -115 * k, y: 80 * k, rotate: -18, scale: 1.25 }, 0)
+          // El texto se aleja y se desvanece en el primer tramo del recorrido.
+          .to(
+            copyRef.current,
+            { y: -80 * k, x: desk ? -28 : 0, autoAlpha: desk ? 0 : 0.25, duration: 0.7, ease: 'power1.in' },
+            0
+          )
+          .to(scrollCueRef.current, { y: 22, autoAlpha: 0, duration: 0.22, ease: 'power1.in' }, 0)
+          // Velo azul que conecta con la escena "Sobre mí" en el tramo final.
+          .fromTo(
+            transitionVeilRef.current,
+            { autoAlpha: 0 },
+            { autoAlpha: desk ? 0.65 : 0.4, duration: 0.3 },
+            0.7
+          )
+          .fromTo(
+            veilMistRef.current,
+            { yPercent: 30, scale: 1.04 },
+            { yPercent: 0, scale: 1.16, duration: 0.3 },
+            0.7
+          )
+          .fromTo(
+            veilColumnHintRef.current,
+            { y: 75, scale: 0.9, autoAlpha: 0 },
+            { y: 0, scale: 1, autoAlpha: 0.45, duration: 0.3 },
+            0.7
+          );
+      });
+    }, section);
+
+    return () => {
+      // La media query debe limpiarse ANTES de restaurar el árbol React:
+      // evita dejar spans materializados o animaciones duplicadas al alternar FX.
+      media?.revert();
+      ctx.revert();
+    };
+  }, [reducedMotion]);
+
+  // Física independiente del cursor en tiempo real (2.5D / perspectiva)
+  useEffect(() => {
+    if (reducedMotion || isMobile) return undefined;
+    const stage = stageRef.current;
+    if (!stage) return undefined;
+
+    const target = { x: 0, y: 0 };
+    const current = { x: 0, y: 0 };
+    let rafId = 0;
+
+    const onPointerMove = (e) => {
+      target.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      target.y = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
+
+    const updateParallax = () => {
+      rafId = window.requestAnimationFrame(updateParallax);
+      current.x += (target.x - current.x) * 0.055;
+      current.y += (target.y - current.y) * 0.055;
+
+      stage.style.setProperty('--mx', current.x.toFixed(4));
+      stage.style.setProperty('--my', current.y.toFixed(4));
+    };
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    rafId = window.requestAnimationFrame(updateParallax);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('pointermove', onPointerMove);
+    };
+  }, [reducedMotion, isMobile]);
+
   return (
-    <section className="cine-scene hero-scene" id="inicio">
-      <div className="hero-pin-stage">
-        {/* ESCENARIO HERO PRINCIPAL */}
+    <section className="hero-scene" id="inicio" ref={sectionRef}>
+      <div className="hero-pin-stage" ref={heroPinRef}>
+        {/* ESCENARIO PRINCIPAL CINEMATOGRÁFICO */}
         <div className="hero-viewport">
+          {/* Fondo atmosférico nocturno, iluminación reactiva y nubes por capas */}
           <div className="hero-backdrop" aria-hidden="true">
             <img
-              src="/assets/cinematic/hero-backdrop-sky.webp"
+              ref={skyImgRef}
+              src="/assets/cinematic/hero-atmosphere.webp"
               alt=""
               className="hero-backdrop__sky"
               fetchPriority="high"
               decoding="async"
             />
-            <div className="hero-stage-light" />
+            <div className="hero-stage-light" ref={stageLightRef} />
             <img
+              ref={cloudBackRef}
               src="/assets/cinematic/cloud-storm.webp"
               alt=""
               className="hero-cloud hero-cloud--upper"
             />
-            <div className="hero-cloud-nebula-wrap">
+            <div className="hero-cloud-nebula-wrap" ref={cloudNebulaRef}>
               <img
                 src="/assets/cinematic/cloud-nebula.webp"
                 alt=""
@@ -151,7 +393,7 @@ export default function HeroScene({ onNavigate }) {
 
           <div className="hero-grid cine-shell">
             {/* COLUMNA IZQUIERDA: Tipografía editorial monumental y CTAs */}
-            <div className="hero-copy">
+            <div className="hero-copy" ref={copyRef}>
               <div className="hero-eyebrow">
                 <span className="hero-eyebrow__line" aria-hidden="true" />
                 <span className="hero-eyebrow__text">{profile.role.toUpperCase()}</span>
@@ -191,24 +433,28 @@ export default function HeroScene({ onNavigate }) {
               </div>
             </div>
 
-            {/* COLUMNA DERECHA: Estatua clásica de mármol, anillo orbital y rocas suspendidas */}
-            <div className="hero-camera-rig">
-              <div className="hero-stage">
-                <div className="hero-orbital-halo" aria-hidden="true" />
+            {/* COLUMNA DERECHA: Rig de cámara 3D + Estatua, anillo orbital y rocas suspendidas */}
+            <div className="hero-camera-rig" ref={cameraRigRef}>
+              <div className="hero-stage" ref={stageRef}>
+                <div className="hero-orbital-halo" ref={haloRef} aria-hidden="true" />
                 <div className="hero-statue-backlight" aria-hidden="true" />
 
-                <OrbitalRingHalf position="back" />
+                <OrbitalRingHalf
+                  position="back"
+                  scrollRef={ringBackRef}
+                  introRef={ringBackIntroRef}
+                />
 
                 <div className="hero-rock hero-rock--two" aria-hidden="true">
-                  <div className="hero-rock-scroll">
+                  <div className="hero-rock-scroll" ref={rock2Ref}>
                     <div className="hero-rock-intro">
                       <img src="/assets/cinematic/rock-2.webp" alt="" className="hero-rock__float-b" />
                     </div>
                   </div>
                 </div>
 
-                <div className="hero-statue-wrap">
-                  <div className="hero-statue-intro">
+                <div className="hero-statue-wrap" ref={statueGroupRef}>
+                  <div className="hero-statue-intro" ref={statueIntroRef}>
                     <div className="hero-statue-parallax">
                       <img
                         src="/assets/cinematic/statue-bust.webp"
@@ -220,6 +466,7 @@ export default function HeroScene({ onNavigate }) {
                         decoding="async"
                       />
                       <img
+                        ref={crackGlowRef}
                         src="/assets/cinematic/statue-cracks-glow.webp"
                         alt=""
                         aria-hidden="true"
@@ -232,10 +479,14 @@ export default function HeroScene({ onNavigate }) {
                   </div>
                 </div>
 
-                <OrbitalRingHalf position="front" />
+                <OrbitalRingHalf
+                  position="front"
+                  scrollRef={ringFrontRef}
+                  introRef={ringFrontIntroRef}
+                />
 
                 <div className="hero-rock hero-rock--one" aria-hidden="true">
-                  <div className="hero-rock-scroll">
+                  <div className="hero-rock-scroll" ref={rock1Ref}>
                     <div className="hero-rock-intro">
                       <img src="/assets/cinematic/rock-1.webp" alt="" className="hero-rock__float-a" />
                     </div>
@@ -243,7 +494,7 @@ export default function HeroScene({ onNavigate }) {
                 </div>
 
                 <div className="hero-rock hero-rock--four" aria-hidden="true">
-                  <div className="hero-rock-scroll">
+                  <div className="hero-rock-scroll" ref={rock4Ref}>
                     <div className="hero-rock-intro">
                       <img src="/assets/cinematic/rock-4.webp" alt="" className="hero-rock__float-c" />
                     </div>
@@ -251,14 +502,14 @@ export default function HeroScene({ onNavigate }) {
                 </div>
 
                 <div className="hero-rock hero-rock--three" aria-hidden="true">
-                  <div className="hero-rock-scroll">
+                  <div className="hero-rock-scroll" ref={rock3Ref}>
                     <div className="hero-rock-intro">
                       <img src="/assets/cinematic/rock-3.webp" alt="" className="hero-rock__float-d" />
                     </div>
                   </div>
                 </div>
 
-                <div className="hero-foreground-mist" aria-hidden="true">
+                <div className="hero-foreground-mist" ref={cloudFrontRef} aria-hidden="true">
                   <img src="/assets/cinematic/cloud-storm.webp" alt="" />
                 </div>
               </div>
@@ -266,6 +517,7 @@ export default function HeroScene({ onNavigate }) {
           </div>
 
           <button
+            ref={scrollCueRef}
             type="button"
             className="hero-scroll-cue"
             onClick={() => onNavigate('sobre-mi')}
@@ -277,24 +529,16 @@ export default function HeroScene({ onNavigate }) {
             <span className="hero-scroll-cue__label">SCROLL PARA EXPLORAR</span>
           </button>
 
-          <div className="hero-horizon-curve" aria-hidden="true" />
+          <div className="hero-horizon-curve" ref={horizonCurveRef} aria-hidden="true" />
         </div>
 
         {/* PANELES INFERIORES DE PRESENTACIÓN (fieles a la composición de la Imagen 1) */}
-        <div className="hero-preview-strip" aria-label="Vista previa de escenas">
+        <div className="hero-preview-strip" ref={previewStripRef} aria-label="Vista previa de escenas">
           <div className="hero-preview-grid">
             {/* Panel 02 · Sobre mí */}
             <article
               className="hero-preview-card hero-preview-card--about"
               onClick={() => onNavigate('sobre-mi')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onNavigate('sobre-mi');
-                }
-              }}
             >
               <div className="hero-preview-card__content">
                 <span className="cine-kicker-num">
@@ -325,23 +569,12 @@ export default function HeroScene({ onNavigate }) {
             <article
               className="hero-preview-card hero-preview-card--projects"
               onClick={() => onNavigate('proyectos')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onNavigate('proyectos');
-                }
-              }}
             >
               <div className="hero-preview-card__content">
                 <span className="cine-kicker-num">
                   03 <i aria-hidden="true" />
                 </span>
                 <h2 className="hero-preview-card__title">Proyectos</h2>
-                <p className="hero-preview-card__desc">
-                  Aplicaciones web reales y verificables en producción: Byztoo PC, Maktub, MR Coiffeur y más.
-                </p>
               </div>
               <div className="hero-preview-card__art hero-preview-art--projects" aria-hidden="true">
                 <div className="preview-screens-rig">
@@ -370,23 +603,12 @@ export default function HeroScene({ onNavigate }) {
             <article
               className="hero-preview-card hero-preview-card--tech"
               onClick={() => onNavigate('tecnologias')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onNavigate('tecnologias');
-                }
-              }}
             >
               <div className="hero-preview-card__content">
                 <span className="cine-kicker-num">
                   04 <i aria-hidden="true" />
                 </span>
                 <h2 className="hero-preview-card__title">Tecnologías</h2>
-                <p className="hero-preview-card__desc">
-                  Stack aplicado y verificado: React, JavaScript, PHP, MySQL, CSS moderno y herramientas de desarrollo.
-                </p>
               </div>
               <div className="hero-preview-card__art hero-preview-art--tech" aria-hidden="true">
                 <div className="preview-cubes-cluster">
@@ -428,14 +650,6 @@ export default function HeroScene({ onNavigate }) {
             <article
               className="hero-preview-card hero-preview-card--contact"
               onClick={() => onNavigate('contacto')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onNavigate('contacto');
-                }
-              }}
             >
               <div className="hero-preview-card__content">
                 <span className="cine-kicker-num">
@@ -462,6 +676,23 @@ export default function HeroScene({ onNavigate }) {
               </div>
             </article>
           </div>
+        </div>
+
+        {/* Velo atmosférico y puente arquitectónico de Etapa 4 (Hero -> Sobre mí) */}
+        <div className="hero-transition-veil" ref={transitionVeilRef} aria-hidden="true">
+          <div className="hero-transition-veil__glow" />
+          <img
+            ref={veilColumnHintRef}
+            src="/assets/cinematic/marble-column.webp"
+            alt=""
+            className="hero-transition-veil__column"
+          />
+          <img
+            ref={veilMistRef}
+            src="/assets/cinematic/cloud-storm.webp"
+            alt=""
+            className="hero-transition-veil__mist"
+          />
         </div>
       </div>
     </section>

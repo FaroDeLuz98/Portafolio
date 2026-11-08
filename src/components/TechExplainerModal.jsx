@@ -23,8 +23,8 @@ export default function TechExplainerModal() {
 
   useEffect(() => {
     if (!explainedTech) return undefined;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    const prevOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
 
     const onKeyDown = (e) => {
       if (e.key === 'Escape') closeTechExplainer();
@@ -32,7 +32,7 @@ export default function TechExplainerModal() {
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      document.documentElement.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
   }, [explainedTech, closeTechExplainer]);

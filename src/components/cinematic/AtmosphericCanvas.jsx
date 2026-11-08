@@ -181,13 +181,18 @@ export default function AtmosphericCanvas({ disabled = false }) {
     };
 
     let rafId = 0;
+    let previousFrame = 0;
+    const minFrameInterval = isMobile ? 1000 / 30 : 1000 / 60;
     let visible = !document.hidden;
 
     const tick = () => {
       if (!visible) return;
       rafId = window.requestAnimationFrame(tick);
+      const now = performance.now();
+      if (now - previousFrame < minFrameInterval) return;
+      previousFrame = now;
 
-      const t = performance.now() * 0.001;
+      const t = now * 0.001;
       pointerCurrent.x += (pointerTarget.x - pointerCurrent.x) * 0.045;
       pointerCurrent.y += (pointerTarget.y - pointerCurrent.y) * 0.045;
       scrollCurrent += (scrollTarget - scrollCurrent) * 0.075;

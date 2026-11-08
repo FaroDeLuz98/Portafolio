@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { contact, navSections, profile } from '../../data/portfolioData.js';
+import { createWordScrubber, responsive, reveal, scrubFromTo } from '../../animations/motion.js';
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -10,6 +13,8 @@ import {
   MailIcon,
 } from './CinematicIcons.jsx';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const PORTAL_PARTICLES = Array.from({ length: 22 }, (_, i) => ({
   id: i,
   left: `${16 + ((i * 37) % 68)}%`,
@@ -18,7 +23,23 @@ const PORTAL_PARTICLES = Array.from({ length: 22 }, (_, i) => ({
   size: `${2 + (i % 3) * 1.5}px`,
 }));
 
-export default function ContactScene({ onNavigate }) {
+export default function ContactScene({
+  onNavigate,
+  reducedMotion = false,
+}) {
+  const sectionRef = useRef(null);
+  const contactPinRef = useRef(null);
+  const darknessVeilRef = useRef(null);
+  const ambientAuraRef = useRef(null);
+  const cameraRigRef = useRef(null);
+  const portalGlowRef = useRef(null);
+  const portalArchRef = useRef(null);
+  const portalParticlesRef = useRef(null);
+  const portalMistRef = useRef(null);
+  const titleBlockRef = useRef(null);
+  const ctaPrimaryRef = useRef(null);
+  const linksBlockRef = useRef(null);
+
   const [copied, setCopied] = useState(false);
   const timerRef = useRef(null);
 
@@ -35,18 +56,103 @@ export default function ContactScene({ onNavigate }) {
     }
   };
 
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || reducedMotion) return undefined;
+
+    let media;
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+      media = mm;
+
+      responsive(mm, ({ desk, scrub }) => {
+        const stage = contactPinRef.current;
+
+        // El portal se "enciende" mientras la escena sube a su posición final.
+        const tl = gsap.timeline({
+          defaults: { ease: 'power1.out', duration: 1 },
+          scrollTrigger: {
+            trigger: stage,
+            start: desk ? 'top 95%' : 'top 95%',
+            end: desk ? 'top -8%' : 'top 15%',
+            scrub,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        tl.fromTo(darknessVeilRef.current, { opacity: 0.3 }, { opacity: 0 }, 0)
+          .fromTo(
+            portalArchRef.current,
+            { autoAlpha: 0.72, y: 36, scale: 0.9 },
+            { autoAlpha: 1, y: 0, scale: 1.05 },
+            0
+          )
+          .fromTo(
+            cameraRigRef.current,
+            { scale: 0.92, rotateX: 4, y: 22 },
+            { scale: 1.02, rotateX: 0, y: 0 },
+            0
+          )
+          .fromTo(
+            portalMistRef.current,
+            { y: 22, scaleX: 0.95, opacity: 0.35 },
+            { y: 0, scaleX: 1.15, opacity: 0.85 },
+            0
+          )
+          .fromTo(
+            portalGlowRef.current,
+            { opacity: 0.38, scale: 0.72 },
+            { opacity: 1, scale: 1.15 },
+            0
+          )
+          .fromTo(
+            ambientAuraRef.current,
+            { opacity: 0.25, scale: 0.8 },
+            { opacity: 0.95, scale: 1.25 },
+            0
+          );
+
+        // Las partículas ascienden durante todo el recorrido de la escena.
+        scrubFromTo(
+          portalParticlesRef.current,
+          { autoAlpha: 0.28, y: 55, scale: 0.9 },
+          { autoAlpha: 1, y: -45, scale: 1.12 },
+          { trigger: stage, start: 'top bottom', end: 'bottom top' },
+          scrub
+        );
+
+        // Entradas de contenido por tiempo.
+        const words = createWordScrubber(scrub, desk ? 1 : 0.5);
+        reveal(titleBlockRef.current?.querySelector('.cine-section-eyebrow'), { y: 22, start: 'top 88%' });
+        words.run(titleBlockRef.current?.querySelectorAll('h2, .contact-headline, .contact-subcopy'));
+        reveal(ctaPrimaryRef.current, { y: 18, scale: 0.95, start: 'top 90%', delay: 0.1 });
+        reveal(linksBlockRef.current, { y: 18, start: 'top 92%', delay: 0.15 });
+
+        return words.revert;
+      });
+    }, section);
+
+    return () => {
+      // La media query debe limpiarse ANTES de restaurar el árbol React:
+      // evita dejar spans materializados o animaciones duplicadas al alternar FX.
+      media?.revert();
+      ctx.revert();
+    };
+  }, [reducedMotion]);
+
   const currentYear = new Date().getFullYear();
 
   return (
-    <section className="cine-scene contact-scene" id="contacto">
-      <div className="contact-pin-stage">
-        {/* Resplandor ambiental azul */}
-        <div className="contact-ambient-aura" aria-hidden="true" />
+    <section className="cine-scene contact-scene" id="contacto" ref={sectionRef}>
+      <div className="contact-pin-stage" ref={contactPinRef}>
+        {/* Velo de penumbra inicial y resplandor ambiental azul */}
+        <div className="contact-darkness-veil" ref={darknessVeilRef} aria-hidden="true" />
+        <div className="contact-ambient-aura" ref={ambientAuraRef} aria-hidden="true" />
 
         <div className="cine-shell contact-portal-layout">
           {/* COLUMNA IZQUIERDA: Título, CTA principal y enlaces verificados */}
           <div className="contact-editorial">
-            <div>
+            <div ref={titleBlockRef}>
               <div className="cine-section-eyebrow">
                 <span className="cine-kicker-num">
                   05 <i aria-hidden="true" />
@@ -68,7 +174,7 @@ export default function ContactScene({ onNavigate }) {
               </p>
             </div>
 
-            <div className="contact-primary-actions">
+            <div className="contact-primary-actions" ref={ctaPrimaryRef}>
               <a
                 href={`mailto:${contact.email}`}
                 className="cine-btn cine-btn--primary cine-btn--lg"
@@ -90,7 +196,7 @@ export default function ContactScene({ onNavigate }) {
               </button>
             </div>
 
-            <div className="contact-verified-links">
+            <div className="contact-verified-links" ref={linksBlockRef}>
               <a href={`mailto:${contact.email}`} className="contact-link-card">
                 <MailIcon size={19} />
                 <div>
@@ -130,15 +236,15 @@ export default function ContactScene({ onNavigate }) {
             </div>
           </div>
 
-          {/* ESCENA DERECHA: Cámara + Arco clásico de piedra iluminado en azul */}
+          {/* ESCENA DERECHA: Cámara 3D + Arco clásico de piedra iluminado en azul */}
           <div className="contact-portal-perspective">
-            <div className="contact-portal-stage" aria-hidden="true">
-              <div className="portal-energy-core">
+            <div className="contact-portal-stage" ref={cameraRigRef} aria-hidden="true">
+              <div className="portal-energy-core" ref={portalGlowRef}>
                 <div className="portal-energy-core__vortex" />
                 <div className="portal-energy-core__horizon" />
               </div>
 
-              <div className="portal-particles">
+              <div className="portal-particles" ref={portalParticlesRef}>
                 {PORTAL_PARTICLES.map((p) => (
                   <span
                     key={p.id}
@@ -154,7 +260,7 @@ export default function ContactScene({ onNavigate }) {
                 ))}
               </div>
 
-              <div className="portal-arch-monument">
+              <div className="portal-arch-monument" ref={portalArchRef}>
                 <img
                   src="/assets/cinematic/portal-arch.webp"
                   alt=""
@@ -164,7 +270,7 @@ export default function ContactScene({ onNavigate }) {
                 />
               </div>
 
-              <div className="portal-threshold-mist">
+              <div className="portal-threshold-mist" ref={portalMistRef}>
                 <img src="/assets/cinematic/cloud-storm.webp" alt="" loading="lazy" />
               </div>
             </div>
@@ -213,7 +319,7 @@ export default function ContactScene({ onNavigate }) {
 
         <div className="cine-shell cine-footer__bottom">
           <span>© {currentYear} Fernando Sisnande · Sarandí Grande, Uruguay</span>
-          <span>React · Desplegado en Vercel</span>
+          <span>React · GSAP · Three.js · Desplegado en Vercel</span>
         </div>
       </footer>
     </section>

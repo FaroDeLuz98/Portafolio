@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import CinematicMotionToggle from './CinematicMotionToggle.jsx';
 import { navSections } from '../../data/portfolioData.js';
 import { ArrowUpRightIcon, CloseIcon, MenuIcon } from './CinematicIcons.jsx';
 
-export default function CinematicNavbar({ activeSection, onNavigate }) {
+export default function CinematicNavbar({ activeSection, onNavigate, onScrollLock, reducedMotion, onToggleMotion }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pendingNavigationRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 36);
@@ -15,8 +17,9 @@ export default function CinematicNavbar({ activeSection, onNavigate }) {
 
   useEffect(() => {
     if (!menuOpen) return undefined;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    onScrollLock?.('mobile-menu', true);
+    const prevOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
 
     const onKeyDown = (e) => {
       if (e.key === 'Escape') setMenuOpen(false);
@@ -24,10 +27,11 @@ export default function CinematicNavbar({ activeSection, onNavigate }) {
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      document.documentElement.style.overflow = prevOverflow;
+      onScrollLock?.('mobile-menu', false);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [menuOpen]);
+  }, [menuOpen, onScrollLock]);
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 961px)');
@@ -38,10 +42,24 @@ export default function CinematicNavbar({ activeSection, onNavigate }) {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
+  // Cerrar el menú primero: Lenis está pausado mientras el overlay permanece abierto.
+  // La navegación se ejecuta cuando el efecto de limpieza ya liberó el scroll.
+  useEffect(() => {
+    if (menuOpen || !pendingNavigationRef.current) return undefined;
+    const id = pendingNavigationRef.current;
+    pendingNavigationRef.current = null;
+    const raf = window.requestAnimationFrame(() => onNavigate(id));
+    return () => window.cancelAnimationFrame(raf);
+  }, [menuOpen, onNavigate]);
+
   const handleLinkClick = (e, id) => {
     e.preventDefault();
-    setMenuOpen(false);
-    onNavigate(id);
+    if (menuOpen) {
+      pendingNavigationRef.current = id;
+      setMenuOpen(false);
+    } else {
+      onNavigate(id);
+    }
   };
 
   return (
@@ -94,6 +112,8 @@ export default function CinematicNavbar({ activeSection, onNavigate }) {
               <span>Trabajemos juntos</span>
               <ArrowUpRightIcon size={15} />
             </a>
+
+            <CinematicMotionToggle reducedMotion={reducedMotion} onToggle={onToggleMotion} />
 
             <button
               type="button"

@@ -1,0 +1,65 @@
+/* v5 — scroll-led typography: individual words emerge as short-lived light dust.
+   No text blur, scaling, absolute positioning, or layout-changing transforms. */
+.cine-material-text { min-width: 0; }
+.cine-material-word {
+  position: relative;
+  display: inline-block;
+  vertical-align: baseline;
+  white-space: nowrap;
+  opacity: 1;
+  isolation: isolate;
+  font: inherit;
+  letter-spacing: inherit;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  pointer-events: inherit;
+}
+.cine-app:not(.is-reduced-motion) .cine-material-word {
+  opacity: var(--material-opacity, 1);
+}
+/* Tiny materialization sparks: inside the word's own box, never above controls. */
+.cine-material-word::before,
+.cine-material-word::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: -.18em -.12em;
+  pointer-events: none;
+  opacity: 0;
+  background-repeat: no-repeat;
+  /* Six short-lived points of light give the impression that each word
+     crystallizes from dust. The glyphs themselves remain perfectly sharp. */
+  filter: drop-shadow(0 0 3px rgba(96,165,250,.75));
+}
+.cine-material-word::before {
+  background-image:
+    radial-gradient(circle, #eff9ff 0 1.3px, transparent 2.6px),
+    radial-gradient(circle, #60a5fa 0 1.1px, transparent 2px),
+    radial-gradient(circle, #bfdbfe 0 1px, transparent 2.5px);
+  background-size: 8px 8px, 7px 7px, 6px 6px;
+  background-position: 8% 16%, 83% 4%, 49% 90%;
+}
+.cine-material-word::after {
+  background-image:
+    radial-gradient(circle, #dbeafe 0 1.3px, transparent 2.5px),
+    radial-gradient(circle, #3b82f6 0 1.1px, transparent 2px),
+    radial-gradient(circle, #bae6fd 0 1px, transparent 2.1px);
+  background-size: 6px 6px, 7px 7px, 5px 5px;
+  background-position: 19% 80%, 66% 37%, 93% 78%;
+}
+.cine-app:not(.is-reduced-motion) .cine-material-word::before,
+.cine-app:not(.is-reduced-motion) .cine-material-word::after {
+  opacity: var(--material-spark, 0);
+}
+
+/* Modo OFF: contenido visible de inmediato, sin falsos vacíos. */
+.cine-app.is-reduced-motion .cine-material-word { opacity: 1 !important; }
+.cine-app.is-reduced-motion .cine-material-word::before,
+.cine-app.is-reduced-motion .cine-material-word::after { opacity: 0 !important; }
+@media (max-width: 640px) {
+  .cine-material-word::after { display:none; }
+}
+@media print {
+  .cine-material-word { opacity:1!important; }
+  .cine-material-word::before, .cine-material-word::after { display:none!important; }
+}

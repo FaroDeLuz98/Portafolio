@@ -43,7 +43,7 @@ html {
   background-color: var(--bg-void);
   color: var(--text-white);
   font-family: var(--font-sans);
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scroll-padding-top: 80px;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
@@ -567,15 +567,15 @@ button {
 }
 
 @media (min-width: 961px) {
-  .hero-pin-stage {
-    min-height: 100vh;
-    min-height: 100svh;
+  .cine-app:not(.is-reduced-motion) .hero-pin-stage {
+    height: 100vh;
+    height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
 
-  .hero-viewport {
+  .cine-app:not(.is-reduced-motion) .hero-viewport {
     flex: 1 1 auto;
     min-height: 0;
   }
@@ -1554,8 +1554,10 @@ button {
   min-height: 510px;
   display: grid;
   place-items: center;
+  /* Solo `perspective` (cada capa conserva su giro 3D). Con `preserve-3d` los hijos se
+     ordenan por profundidad y la columna rotada tapaba la tarjeta flotante pese a su z-index. */
   perspective: 1100px;
-  transform-style: preserve-3d;
+  isolation: isolate;
 }
 
 .about-stage-glow {
@@ -1663,13 +1665,16 @@ button {
   gap: 1.35rem;
 }
 
+/* GSAP anima `transform` con scrub en estas tarjetas: una transition sobre transform
+   introduce un retraso de 0.35s y se pelea con el scroll. El hover usa la propiedad
+   independiente `translate`, que GSAP no toca. */
 .about-pillar-card {
   padding: 1.8rem;
-  transition: transform 0.35s var(--ease-cinematic), border-color 0.35s ease;
+  transition: translate 0.35s var(--ease-cinematic), border-color 0.35s ease;
 }
 
 .about-pillar-card:hover {
-  transform: translateY(-4px);
+  translate: 0 -4px;
   border-color: rgba(96, 165, 250, 0.42);
 }
 
@@ -1903,35 +1908,59 @@ button {
   will-change: transform, opacity;
 }
 
+/* Pista alta + escenario sticky (reemplaza al pin de GSAP).
+   La altura de la pista = 1 pantalla + ~170vh de recorrido por proyecto. */
+.projects-track {
+  position: relative;
+}
+
 @media (min-width: 961px) {
-  .projects-pin-stage {
-    min-height: auto;
-    padding-top: 5.4rem;
-    padding-bottom: 3.5rem;
+  .cine-app:not(.is-reduced-motion) .projects-track {
+    height: 780vh;
+    height: 780svh;
   }
 
-  .projects-theater-shell {
+  .cine-app:not(.is-reduced-motion) .projects-pin-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    padding-top: 4.9rem;
+    padding-bottom: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 2.25rem;
+    justify-content: center;
   }
 
-  .projects-theater-hud .cine-display-title {
+  .cine-app:not(.is-reduced-motion) .projects-theater-shell {
+    height: 100%;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .cine-app:not(.is-reduced-motion) .projects-theater-hud .cine-display-title {
     font-size: clamp(2.15rem, 3.4vw, 3.1rem);
   }
 
-  .projects-theater-deck {
-    display: flex;
-    flex-direction: column;
-    gap: 3.5rem;
+  .cine-app:not(.is-reduced-motion) .projects-theater-deck {
+    flex: 1 1 auto;
+    min-height: 0;
+    perspective: 1400px;
+    display: block;
   }
 
-  .project-cinema-slide {
-    position: relative;
-    width: 100%;
-    opacity: 1;
-    visibility: visible;
+  .cine-app:not(.is-reduced-motion) .project-cinema-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .cine-app:not(.is-reduced-motion) .project-cinema-slide.is-active-slide {
     pointer-events: auto;
+    z-index: 6;
   }
 }
 
@@ -2982,7 +3011,11 @@ button {
    ========================================================================== */
 
 .cine-floating-control {
-  display: none !important;
+  position: fixed;
+  bottom: clamp(1rem, 2.8vh, 1.85rem);
+  right: clamp(1rem, 2.8vw, 1.85rem);
+  z-index: 99;
+  pointer-events: auto;
 }
 
 .cine-motion-toggle-pill {
@@ -3115,24 +3148,26 @@ button {
   transition-duration: 0.05s !important;
 }
 
-.hero-copy,
-.hero-statue-wrap,
-.hero-preview-strip,
-.about-editorial,
-.about-pillar-card,
-.about-timeline-card,
-.project-cinema-slide,
-.tech-crystal-orbit,
-.tech-podium-inspector,
-.contact-portal-stage,
-.contact-primary-actions,
-.contact-verified-links {
+.cine-app.is-reduced-motion .hero-copy,
+.cine-app.is-reduced-motion .hero-statue-wrap,
+.cine-app.is-reduced-motion .hero-preview-strip,
+.cine-app.is-reduced-motion .about-editorial,
+.cine-app.is-reduced-motion [data-about-step],
+.cine-app.is-reduced-motion .about-pillar-card,
+.cine-app.is-reduced-motion .about-timeline-card,
+.cine-app.is-reduced-motion .project-cinema-slide,
+.cine-app.is-reduced-motion .tech-crystal-orbit,
+.cine-app.is-reduced-motion .tech-podium-inspector,
+.cine-app.is-reduced-motion .contact-portal-stage,
+.cine-app.is-reduced-motion .contact-primary-actions,
+.cine-app.is-reduced-motion .contact-verified-links {
   opacity: 1 !important;
   visibility: visible !important;
+  transform: none !important;
   pointer-events: auto !important;
 }
 
-.hero-transition-veil {
+.cine-app.is-reduced-motion .hero-transition-veil {
   display: none !important;
 }
 
@@ -3367,4 +3402,82 @@ button {
   .contact-portal-stage {
     min-height: 350px;
   }
+}
+
+/* Ajustes de estabilidad de interacción cinematográfica */
+@media (min-width: 961px) {
+  /* Las escenas fijadas deben ocupar una sola pantalla; contenido interno con
+     desplazamiento propio si la ventana es demasiado baja. */
+  .cine-app:not(.is-reduced-motion) .projects-theater-deck {
+    isolation: isolate;
+  }
+}
+
+/* El diálogo permite leer el contenido sin desplazar accidentalmente la película. */
+.cine-modal-backdrop {
+  overscroll-behavior: contain;
+}
+.cine-modal-card {
+  overscroll-behavior: contain;
+}
+
+/* Evita que el modo 'sin animaciones' deje clips o escenas ocultas. */
+.cine-app.is-reduced-motion .hero-pin-stage,
+.cine-app.is-reduced-motion .about-pin-stage,
+.cine-app.is-reduced-motion .projects-pin-stage,
+.cine-app.is-reduced-motion .tech-pin-stage,
+.cine-app.is-reduced-motion .contact-pin-stage {
+  overflow: visible;
+}
+
+@media (max-height: 700px) {
+  .cine-modal-card { max-height: calc(100dvh - 2.5rem); overflow-y: auto; }
+  .cine-modal-backdrop { align-items: start; }
+}
+
+/* Reservar el ancho de la barra evita desplazamientos laterales al abrir modales. */
+@media (min-width: 961px) {
+  html { scrollbar-gutter: stable; }
+}
+
+/* Palabras que se materializan con el scroll (ver createWordScrubber en animations/motion.js) */
+.mw {
+  display: inline-block;
+}
+
+
+/* FUSIÓN V5+V7: Interruptor en el encabezado; nunca tapa tarjetas o botones. */
+.cine-header__actions { flex-shrink: 0; }
+.cine-header__actions .cine-floating-control {
+  display:flex; position:static; inset:auto; width:max-content; max-width:100%;
+  z-index:auto; flex:0 0 auto; align-items:center;
+}
+.cine-header__actions .cine-motion-toggle-pill {
+  min-height:40px; padding:.5rem .72rem; gap:.4rem;
+  font-size:.76rem; line-height:1; white-space:nowrap;
+  background:rgba(6,14,34,.94); border:1px solid rgba(147,197,253,.5);
+  box-shadow:0 4px 14px rgba(0,0,0,.2); transform:none;
+}
+.cine-header__actions .cine-motion-toggle-pill:hover {
+  border-color:#93c5fd; background:rgba(14,28,57,.98); transform:none;
+}
+@media (min-width:961px) and (max-width:1180px) {
+  .cine-header__inner {gap:.7rem;}
+  .cine-nav {gap:1rem;}
+  .cine-header__actions {gap:.4rem;}
+  .cine-cta-outline {padding-inline:.75rem;}
+  .cine-header__actions .cine-motion-toggle-pill {padding-inline:.54rem;}
+}
+@media (max-width:640px) {
+  .cine-header__actions { gap:.4rem; }
+  .cine-header__actions .cine-motion-toggle-pill { min-height:40px; padding:.45rem .59rem; font-size:.72rem; gap:.3rem; }
+  .cine-header__actions .cine-motion-toggle-pill__label {font-size:0;}
+  .cine-header__actions .cine-motion-toggle-pill__label::after {content:'FX ON';font-size:.72rem;}
+  .cine-header__actions .cine-motion-toggle-pill.is-reduced .cine-motion-toggle-pill__label::after {content:'FX OFF';}
+}
+@media (max-width:420px) {
+  .cine-brand {font-size:1rem; gap:.47rem;}
+  .cine-header__inner {gap:.4rem;}
+  .cine-header__actions .cine-motion-toggle-pill {padding-inline:.42rem;gap:.25rem;}
+  .cine-header__actions .cine-motion-toggle-pill__icon {display:none;}
 }
